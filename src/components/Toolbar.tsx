@@ -4,7 +4,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import React, { Dispatch, SetStateAction, forwardRef } from "react";
 import { ArrowUturnLeftIcon, ArrowUturnRightIcon } from "@heroicons/react/20/solid";
 import { ColorSelector } from "./FontColorSelector";
-import { Highlighter, ListOrdered, List, ListChecks } from "lucide-react";
+import { Highlighter, ListOrdered, List, ListChecks, TextQuote, Quote } from "lucide-react";
 import {
 	FontBoldIcon,
 	FontItalicIcon,
@@ -13,6 +13,8 @@ import {
 	TextAlignLeftIcon,
 	TextAlignCenterIcon,
 	TextAlignRightIcon,
+	QuoteIcon,
+	DividerHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { ColorHex } from "@/utils/evernoteColors";
 import { twColors } from "@/utils/tailwindColors";
@@ -208,6 +210,21 @@ export function ToolbarComponent({
 				</>
 
 				<ToolbarSeparator />
+
+				<ToolbarButtonWithTooltip
+					tooltipContent="Quote"
+					onClick={() => editor.chain().focus().toggleBlockquote().run()}
+					isActive={editor.isActive("blockquote")}
+				>
+					<QuoteIcon className={`${iconClasses}`} />
+				</ToolbarButtonWithTooltip>
+
+				<ToolbarButtonWithTooltip
+					tooltipContent="Horizontal divider"
+					onClick={() => editor.chain().focus().setHorizontalRule().run()}
+				>
+					<DividerHorizontalIcon className={`${iconClasses}`} />
+				</ToolbarButtonWithTooltip>
 			</Toolbar.Root>
 		</>
 	);

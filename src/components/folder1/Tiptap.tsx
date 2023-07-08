@@ -7,7 +7,6 @@ import StarterKit from "@tiptap/starter-kit";
 import { Color } from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import Link from "@tiptap/extension-link";
-import MenuBar from "./MenuBar";
 import TiptapReactNode from "./TiptapReactComponent";
 import { ToolbarComponent } from "../Toolbar";
 import React, { useState } from "react";
@@ -125,7 +124,6 @@ const Tiptap = () => {
 				highlightColor={highlightColor}
 				setHighlightColor={setHighlightColor}
 			/>
-			<MenuBar editor={editor} />
 			<EditorContent editor={editor} />
 		</>
 	);
