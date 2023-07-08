@@ -32,7 +32,7 @@ function TiptapButton(props: any) {
 	return (
 		<NodeViewWrapper className="react-component" data-fuck="fuck">
 			<button
-				className="my-2 bg-blue-200 px-1 py-2 hover:bg-blue-300 w-96"
+				className="my-2 w-96 bg-blue-200 px-1 py-2 hover:bg-blue-300"
 				onClick={() => {
 					props.updateAttributes({
 						count: props.node.attrs.count + 1,
@@ -40,7 +40,8 @@ function TiptapButton(props: any) {
 					setCount((prev) => prev + 1);
 				}}
 			>
-				<span className="text-slate-400">Clicked:</span> {count}x.&#160;&#160;&#160;<span className="text-slate-400">ID:</span> {customId}
+				<span className="text-slate-400">Clicked:</span> {count}x.&#160;&#160;&#160;
+				<span className="text-slate-400">ID:</span> {customId}
 			</button>
 		</NodeViewWrapper>
 	);
