@@ -1,5 +1,7 @@
 import '@/styles/globals.css'
 import '@/styles/tiptap.scss'
+import '@/styles/calendar.scss'
+import '@/styles/calendar-colors.scss'
 
 import type { AppProps } from 'next/app'
 

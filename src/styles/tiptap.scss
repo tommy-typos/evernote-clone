@@ -1,5 +1,6 @@
 :root {
 	--slate-300: #cbd5e1;
+	--slate-500: #64748b;
 	--slate-700: #334155;
 	--slate-950: #020617;
 	--blue-500: #3b82f6;
@@ -12,9 +13,10 @@
 
 .ProseMirror {
 	outline: none;
-	margin: var(--text-xl-20);
-	padding: 50px;
-	border: 1px solid black;
+	padding: 48px;
+	color: white;
+	height: 100%;
+	
 
 	a {
 		color: var(--blue-500);
@@ -42,6 +44,12 @@
 	li ul,
 	li ol {
 		padding-left: var(--text-xl-20);
+	}
+
+	[data-checked="true"] > div > p {
+		text-decoration: line-through;
+		font-style: italic;
+		color: var(--slate-300)
 	}
 
 	h1 {
@@ -132,3 +140,12 @@
 		}
 	}
 }
+
+// placeholder
+.ProseMirror p.is-editor-empty:first-child::before {
+	color: var(--slate-500);
+	content: attr(data-placeholder);
+	float: left;
+	height: 0;
+	pointer-events: none;
+  }

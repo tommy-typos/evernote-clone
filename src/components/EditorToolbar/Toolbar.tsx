@@ -18,7 +18,7 @@ import {
 } from "@radix-ui/react-icons";
 import { ColorHex } from "@/utils/evernoteColors";
 import { twColors } from "@/utils/tailwindColors";
-import { ColorHexOrAuto } from "./folder1/Tiptap";
+import { ColorHexOrAuto } from "../Tiptap";
 import { HighlightSelector } from "./HighlightSelector";
 import { HeadingLevelSelector } from "./HeadingSelector";
 
@@ -57,7 +57,7 @@ export function ToolbarComponent({
 
 	return (
 		<>
-			<Toolbar.Root className="flex h-12 items-center bg-slate-900 py-2 pl-2">
+			<Toolbar.Root className="flex h-12 items-center bg-slate-900 py-2 pl-2 border-b border-b-slate-600">
 				<>
 					<ToolbarButtonWithTooltip
 						tooltipContent="Undo"
