@@ -7,8 +7,8 @@ import StarterKit from "@tiptap/starter-kit";
 import { Color } from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import Link from "@tiptap/extension-link";
-import TiptapReactNode from "./folder1/TiptapReactComponent";
-import { ToolbarComponent } from "./EditorToolbar/Toolbar";
+import TiptapReactNode from "./TiptapReactComponent";
+import { ToolbarComponent } from "../EditorToolbar/Toolbar";
 import React, { useState, useRef, MutableRefObject, useEffect } from "react";
 import { getFontColorsDarkMode, getHighlightColorsDarkMode, ColorHex } from "@/utils/evernoteColors";
 import { useEditor, EditorContent, Extension } from "@tiptap/react";
@@ -16,6 +16,7 @@ import { Editor } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
 import { NoteIDwithNoteType, noteType } from "./App";
 import { debounce, isToday, saveToLocalStorage } from "@/utils/functions1";
+import { isExactListTypeActive } from "../tiptap/isExactListTypeActive";
 
 const TabKeepsFocusExtension = Extension.create({
 	name: "tabKeepsFocus",
@@ -135,7 +136,12 @@ const Tiptap = ({ selectedNote }: Props) => {
 				}
 				stuffTodo(editor);
 			},
+
+			onFocus({ editor, event }) {
+				stuffTodo(editor);
+			},
 			content: noteContent.current,
+			// content: `<ul><li><p>bullet</p><ol><li><p>ordered</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p></div></li></ul></li></ol></li></ul><p></p><ol><li><p>single ordered</p></li></ol><p></p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>single check</p></div></li></ul>`,
 			// content: `<p>Hello World! 🌎️</p>`,
 			// content: `<p>Hello World! 🌎️</p><react-component count=100></react-component>`,
 			parseOptions: {
@@ -151,6 +157,7 @@ const Tiptap = ({ selectedNote }: Props) => {
 		else if (editor.isActive("heading", { level: 2 })) tempCurrentHeading = "heading-2";
 		else if (editor.isActive("heading", { level: 3 })) tempCurrentHeading = "heading-3";
 		else if (editor.isActive("paragraph")) tempCurrentHeading = "paragraph";
+
 		setHeadingLevel(tempCurrentHeading);
 
 		let activeColorFound = false;

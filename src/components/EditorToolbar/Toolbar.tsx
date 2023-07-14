@@ -18,9 +18,10 @@ import {
 } from "@radix-ui/react-icons";
 import { ColorHex } from "@/utils/evernoteColors";
 import { twColors } from "@/utils/tailwindColors";
-import { ColorHexOrAuto } from "../Tiptap";
+import { ColorHexOrAuto } from "../folder1/Tiptap";
 import { HighlightSelector } from "./HighlightSelector";
 import { HeadingLevelSelector } from "./HeadingSelector";
+import { isExactListTypeActive } from "../tiptap/isExactListTypeActive";
 
 type Props = {
 	editor: Editor | null;
@@ -57,7 +58,7 @@ export function ToolbarComponent({
 
 	return (
 		<>
-			<Toolbar.Root className="flex h-12 items-center bg-slate-900 py-2 pl-2 border-b border-b-slate-600">
+			<Toolbar.Root className="flex h-12 items-center border-b border-b-slate-600 bg-slate-900 py-2 pl-2">
 				<>
 					<ToolbarButtonWithTooltip
 						tooltipContent="Undo"
@@ -158,7 +159,7 @@ export function ToolbarComponent({
 					<ToolbarButtonWithTooltip
 						tooltipContent="Bulleted list"
 						onClick={() => editor.chain().focus().toggleBulletList().run()}
-						isActive={editor.isActive("bulletList") && headingLevel !== ""}
+						isActive={isExactListTypeActive(editor, "bulletList") && headingLevel !== ""}
 					>
 						<List className={`${iconClasses}`} />
 					</ToolbarButtonWithTooltip>
@@ -166,7 +167,7 @@ export function ToolbarComponent({
 					<ToolbarButtonWithTooltip
 						tooltipContent="Numbered list"
 						onClick={() => editor.chain().focus().toggleOrderedList().run()}
-						isActive={editor.isActive("orderedList") && headingLevel !== ""}
+						isActive={isExactListTypeActive(editor, "orderedList") && headingLevel !== ""}
 					>
 						<ListOrdered className={`${iconClasses}`} />
 					</ToolbarButtonWithTooltip>
@@ -174,7 +175,7 @@ export function ToolbarComponent({
 					<ToolbarButtonWithTooltip
 						tooltipContent="Checklist"
 						onClick={() => editor.chain().focus().toggleTaskList().run()}
-						isActive={editor.isActive("taskList") && headingLevel !== ""}
+						isActive={isExactListTypeActive(editor, "taskList") && headingLevel !== ""}
 					>
 						<ListChecks className={`${iconClasses}`} />
 					</ToolbarButtonWithTooltip>

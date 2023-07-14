@@ -1,7 +1,7 @@
 import Calendar from "react-calendar";
 import { OnArgs } from "react-calendar/dist/cjs/shared/types";
 import { useState, useEffect } from "react";
-import { returnDateID } from "../utils/functions1";
+import { returnDateID } from "../../utils/functions1";
 import { Dispatch, SetStateAction } from "react";
 import { NoteIDwithNoteType } from "./App";
 
@@ -28,7 +28,7 @@ export function DailyNotes({ setSelectedNote }: Props) {
 
 	return (
 		<>
-			<div className="p-5">
+			<div className="h-full p-5">
 				<Calendar
 					value={selectedDate}
 					onChange={setSelectedDate as any}

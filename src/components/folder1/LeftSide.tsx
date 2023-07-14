@@ -1,8 +1,8 @@
 import { CalendarDaysIcon, FolderIcon } from "@heroicons/react/20/solid";
-import {  UserCog2 } from "lucide-react";
+import { UserCog2 } from "lucide-react";
 import { useState } from "react";
-import { ProfileAndSettings } from "./folder1/ProfileAndSettings";
-import { Notebooks } from "./Notebooks";
+import { ProfileAndSettings } from "./ProfileAndSettings";
+import { Notebooks } from "../Notebooks";
 import { DailyNotes } from "./DailyNotes";
 import { Dispatch, SetStateAction } from "react";
 import { NoteIDwithNoteType } from "./App";
@@ -15,10 +15,10 @@ type Props = {
 };
 
 export function LeftSide({ selectedNote, setSelectedNote }: Props) {
-	const [openTab, setOpenTab] = useState<TabType>("dailyNotes");
+	const [openTab, setOpenTab] = useState<TabType>("notebooks");
 
 	return (
-		<div style={{ minWidth: "384px" }} className="h-full w-96 bg-slate-950 ">
+		<div style={{ minWidth: "384px" }} className="flex h-full w-96 flex-col bg-slate-950">
 			<div className="flex h-12 border-b border-slate-600">
 				<button
 					onClick={() => setOpenTab("settings")}

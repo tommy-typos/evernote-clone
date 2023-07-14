@@ -7,15 +7,3 @@ body,
 #__next {
 	height: 100%;
 }
-
-/* ::-webkit-scrollbar {
-	width: 10px;
-}
-
-::-webkit-scrollbar-track {
-	background: var(--neutral-800);
-}
-
-::-webkit-scrollbar-thumb {
-	background: var(--neutral-500);
-} */

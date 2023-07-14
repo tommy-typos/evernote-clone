@@ -5,7 +5,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ColorWheelIcon } from "@/svgs/svgExporter";
 import { Half2Icon } from "@radix-ui/react-icons";
 import { ColorHex, getFontColorsDarkMode } from "@/utils/evernoteColors";
-import { ColorHexOrAuto, generateAuto } from "../Tiptap";
+import { ColorHexOrAuto, generateAuto } from "../folder1/Tiptap";
 import { ColorSelectItem, SelectViewPort } from "./HighlightSelector";
 import { TooltipProvider } from "./Toolbar";
 

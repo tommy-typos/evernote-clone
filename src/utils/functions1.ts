@@ -1,4 +1,4 @@
-import { noteType } from "@/components/App";
+import { noteType } from "@/components/folder1/App";
 import { MutableRefObject } from "react";
 
 export const isToday = (someDate: Date) => {
