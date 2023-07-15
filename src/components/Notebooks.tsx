@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import styles from "./Notebooks.module.css";
+import { DndSortable } from "./DndSortable";
 
 export function Notebooks() {
 	return (
@@ -8,6 +9,7 @@ export function Notebooks() {
 			<h1 className={classNames(styles.Wrapper)}>
 				hello <span>world</span>
 			</h1>
+			<DndSortable />
 		</div>
 	);
 }
