@@ -176,6 +176,9 @@ export function SortableTree({
 		},
 	};
 
+	// console.log(JSON.stringify(items.map(aytem => aytem.id), null, 2))
+	// console.log(JSON.stringify(projected, null, 2))
+
 	return (
 		<DndContext
 			accessibility={{ announcements }}

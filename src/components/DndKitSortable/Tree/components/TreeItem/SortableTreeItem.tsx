@@ -23,6 +23,7 @@ export function SortableTreeItem({ id, depth, ...props }: Props) {
 		setDroppableNodeRef,
 		transform,
 		transition,
+		isOver,
 	} = useSortable({
 		id,
 		animateLayoutChanges,
@@ -47,6 +48,7 @@ export function SortableTreeItem({ id, depth, ...props }: Props) {
 				...listeners,
 			}}
 			{...props}
+			isOver={isOver}
 		/>
 	);
 }

@@ -9,10 +9,25 @@ const SortableTreeClient = dynamic(() => Promise.resolve(SortableTree), {
 export function DndSortable() {
 	return (
 		<>
-			<SortableTreeClient collapsible removable defaultItems={initialItems} />
+			<SortableTreeClient collapsible removable defaultItems={initialItems2} />
 		</>
 	);
 }
+
+const initialItems2: TreeItems = [
+	{
+		id: "Home",
+		children: [],
+	},
+	{
+		id: "Collections",
+		children: [],
+	},
+	{
+		id: "About Us",
+		children: [],
+	},
+];
 
 const initialItems: TreeItems = [
 	{
