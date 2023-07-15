@@ -1,0 +1,12 @@
+$redColor: red;
+
+.Wrapper {
+	text-align: center;
+	color: white;
+
+	span {
+		color: white;
+		background-color: $redColor;
+		padding: 0 5px;
+	}
+}
