@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-	Announcements,
+	// Announcements,
 	DndContext,
 	closestCenter,
-	KeyboardSensor,
+	// KeyboardSensor,
 	PointerSensor,
 	PointerSensorOptions,
 	useSensor,
@@ -16,9 +16,10 @@ import {
 	DragOverEvent,
 	MeasuringStrategy,
 	DropAnimation,
-	Modifier,
+	// Modifier,
 	defaultDropAnimation,
 	UniqueIdentifier,
+	pointerWithin
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
@@ -30,38 +31,14 @@ import {
 	removeItem,
 	removeChildrenOf,
 	setProperty,
+	getDragDepth,
 } from "./utilities";
 import type { FlattenedItem, SensorContext, TreeItems } from "./types";
-import { sortableTreeKeyboardCoordinates } from "./keyboardCoordinates";
+// import { sortableTreeKeyboardCoordinates } from "./keyboardCoordinates";
 import { SortableTreeItem } from "./components";
 import { CSS } from "@dnd-kit/utilities";
-
-const initialItems: TreeItems = [
-	{
-		id: "Home",
-		children: [],
-	},
-	{
-		id: "Collections",
-		children: [
-			{ id: "Spring", children: [] },
-			{ id: "Summer", children: [] },
-			{ id: "Fall", children: [] },
-			{ id: "Winter", children: [] },
-		],
-	},
-	{
-		id: "About Us",
-		children: [],
-	},
-	{
-		id: "My Account",
-		children: [
-			{ id: "Addresses", children: [] },
-			{ id: "Order History", children: [] },
-		],
-	},
-];
+import { initialItems } from "@/components/DndSortable";
+// import { restrictToParentElement, restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 
 const measuring = {
 	droppable: {
@@ -102,7 +79,7 @@ interface Props {
 
 const customPointerSensorOptions: PointerSensorOptions = {
 	activationConstraint: {
-		delay: 200,
+		delay: 150,
 		tolerance: 0,
 	},
 };
@@ -118,10 +95,10 @@ export function SortableTree({
 	const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 	const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
 	const [offsetLeft, setOffsetLeft] = useState(0);
-	const [currentPosition, setCurrentPosition] = useState<{
-		parentId: UniqueIdentifier | null;
-		overId: UniqueIdentifier;
-	} | null>(null);
+	// const [currentPosition, setCurrentPosition] = useState<{
+	// 	parentId: UniqueIdentifier | null;
+	// 	overId: UniqueIdentifier;
+	// } | null>(null);
 
 	const flattenedItems = useMemo(() => {
 		const flattenedTree = flattenTree(items);
@@ -132,56 +109,75 @@ export function SortableTree({
 
 		return removeChildrenOf(flattenedTree, activeId ? [activeId, ...collapsedItems] : collapsedItems);
 	}, [activeId, items]);
+
 	const projected =
 		activeId && overId ? getProjection(flattenedItems, activeId, overId, offsetLeft, indentationWidth) : null;
-	const sensorContext: SensorContext = useRef({
-		items: flattenedItems,
-		offset: offsetLeft,
-	});
-	const [coordinateGetter] = useState(() =>
-		sortableTreeKeyboardCoordinates(sensorContext, indicator, indentationWidth)
-	);
+
+	// const sensorContext: SensorContext = useRef({
+	// 	items: flattenedItems,
+	// 	offset: offsetLeft,
+	// });
+	// const [coordinateGetter] = useState(() =>
+	// 	sortableTreeKeyboardCoordinates(sensorContext, indicator, indentationWidth)
+	// );
 	const sensors = useSensors(
-		useSensor(PointerSensor, customPointerSensorOptions),
-		useSensor(KeyboardSensor, {
-			coordinateGetter,
-		})
+		useSensor(PointerSensor, customPointerSensorOptions)
+		// useSensor(KeyboardSensor, {
+		// 	coordinateGetter,
+		// })
 	);
 
 	const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [flattenedItems]);
 	const activeItem = activeId ? flattenedItems.find(({ id }) => id === activeId) : null;
 
-	useEffect(() => {
-		sensorContext.current = {
-			items: flattenedItems,
-			offset: offsetLeft,
-		};
-	}, [flattenedItems, offsetLeft]);
+	// useEffect(() => {
+	// 	sensorContext.current = {
+	// 		items: flattenedItems,
+	// 		offset: offsetLeft,
+	// 	};
+	// }, [flattenedItems, offsetLeft]);
 
-	const announcements: Announcements = {
-		onDragStart({ active }) {
-			return `Picked up ${active.id}.`;
-		},
-		onDragMove({ active, over }) {
-			return getMovementAnnouncement("onDragMove", active.id, over?.id);
-		},
-		onDragOver({ active, over }) {
-			return getMovementAnnouncement("onDragOver", active.id, over?.id);
-		},
-		onDragEnd({ active, over }) {
-			return getMovementAnnouncement("onDragEnd", active.id, over?.id);
-		},
-		onDragCancel({ active }) {
-			return `Moving was cancelled. ${active.id} was dropped in its original position.`;
-		},
-	};
+	// const announcements: Announcements = {
+	// 	onDragStart({ active }) {
+	// 		return `Picked up ${active.id}.`;
+	// 	},
+	// 	onDragMove({ active, over }) {
+	// 		return getMovementAnnouncement("onDragMove", active.id, over?.id);
+	// 	},
+	// 	onDragOver({ active, over }) {
+	// 		return getMovementAnnouncement("onDragOver", active.id, over?.id);
+	// 	},
+	// 	onDragEnd({ active, over }) {
+	// 		return getMovementAnnouncement("onDragEnd", active.id, over?.id);
+	// 	},
+	// 	onDragCancel({ active }) {
+	// 		return `Moving was cancelled. ${active.id} was dropped in its original position.`;
+	// 	},
+	// };
 
-	// console.log(JSON.stringify(items.map(aytem => aytem.id), null, 2))
-	// console.log(JSON.stringify(projected, null, 2))
+	
+	// console.log(JSON.stringify(sortedIds, null, 2));
+	
+	// console.log("offsetLeft", offsetLeft);
+	// console.log(JSON.stringify(flattenedItems.map(aytem => {
+	// 	// aytem.depth
+	// 	return {
+	// 		id: aytem.id,
+	// 		depth: aytem.depth,
+	// 	}
+	// }), null, 2))
+	console.log(projected);
+
+	// useEffect(() => {
+	// 	console.log('offsetLeft: ', offsetLeft, ", indentationWidth: ", indentationWidth);
+	// 	console.log('dragdepth: ', getDragDepth(offsetLeft, indentationWidth))
+	// 	console.log(overId);
+	// }, [offsetLeft])
 
 	return (
 		<DndContext
-			accessibility={{ announcements }}
+			// modifiers={[restrictToFirstScrollableAncestor]}
+			// accessibility={{ announcements }}
 			sensors={sensors}
 			collisionDetection={closestCenter}
 			measuring={measuring}
@@ -208,7 +204,7 @@ export function SortableTree({
 				{createPortal(
 					<DragOverlay
 						dropAnimation={dropAnimationConfig}
-						modifiers={indicator ? [adjustTranslate] : undefined}
+						// modifiers={indicator ? [adjustTranslate] : undefined}
 					>
 						{activeId && activeItem ? (
 							<SortableTreeItem
@@ -231,14 +227,14 @@ export function SortableTree({
 		setActiveId(activeId);
 		setOverId(activeId);
 
-		const activeItem = flattenedItems.find(({ id }) => id === activeId);
+		// const activeItem = flattenedItems.find(({ id }) => id === activeId);
 
-		if (activeItem) {
-			setCurrentPosition({
-				parentId: activeItem.parentId,
-				overId: activeId,
-			});
-		}
+		// if (activeItem) {
+		// 	setCurrentPosition({
+		// 		parentId: activeItem.parentId,
+		// 		overId: activeId,
+		// 	});
+		// }
 
 		document.body.style.setProperty("cursor", "grabbing");
 	}
@@ -278,7 +274,7 @@ export function SortableTree({
 		setOverId(null);
 		setActiveId(null);
 		setOffsetLeft(0);
-		setCurrentPosition(null);
+		// setCurrentPosition(null);
 
 		document.body.style.setProperty("cursor", "");
 	}
@@ -295,63 +291,63 @@ export function SortableTree({
 		);
 	}
 
-	function getMovementAnnouncement(eventName: string, activeId: UniqueIdentifier, overId?: UniqueIdentifier) {
-		if (overId && projected) {
-			if (eventName !== "onDragEnd") {
-				if (
-					currentPosition &&
-					projected.parentId === currentPosition.parentId &&
-					overId === currentPosition.overId
-				) {
-					return;
-				} else {
-					setCurrentPosition({
-						parentId: projected.parentId,
-						overId,
-					});
-				}
-			}
+	// function getMovementAnnouncement(eventName: string, activeId: UniqueIdentifier, overId?: UniqueIdentifier) {
+	// 	if (overId && projected) {
+	// 		if (eventName !== "onDragEnd") {
+	// 			if (
+	// 				currentPosition &&
+	// 				projected.parentId === currentPosition.parentId &&
+	// 				overId === currentPosition.overId
+	// 			) {
+	// 				return;
+	// 			} else {
+	// 				setCurrentPosition({
+	// 					parentId: projected.parentId,
+	// 					overId,
+	// 				});
+	// 			}
+	// 		}
 
-			const clonedItems: FlattenedItem[] = JSON.parse(JSON.stringify(flattenTree(items)));
-			const overIndex = clonedItems.findIndex(({ id }) => id === overId);
-			const activeIndex = clonedItems.findIndex(({ id }) => id === activeId);
-			const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
+	// 		const clonedItems: FlattenedItem[] = JSON.parse(JSON.stringify(flattenTree(items)));
+	// 		const overIndex = clonedItems.findIndex(({ id }) => id === overId);
+	// 		const activeIndex = clonedItems.findIndex(({ id }) => id === activeId);
+	// 		const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
 
-			const previousItem = sortedItems[overIndex - 1];
+	// 		const previousItem = sortedItems[overIndex - 1];
 
-			let announcement;
-			const movedVerb = eventName === "onDragEnd" ? "dropped" : "moved";
-			const nestedVerb = eventName === "onDragEnd" ? "dropped" : "nested";
+	// 		let announcement;
+	// 		const movedVerb = eventName === "onDragEnd" ? "dropped" : "moved";
+	// 		const nestedVerb = eventName === "onDragEnd" ? "dropped" : "nested";
 
-			if (!previousItem) {
-				const nextItem = sortedItems[overIndex + 1];
-				announcement = `${activeId} was ${movedVerb} before ${nextItem.id}.`;
-			} else {
-				if (projected.depth > previousItem.depth) {
-					announcement = `${activeId} was ${nestedVerb} under ${previousItem.id}.`;
-				} else {
-					let previousSibling: FlattenedItem | undefined = previousItem;
-					while (previousSibling && projected.depth < previousSibling.depth) {
-						const parentId: UniqueIdentifier | null = previousSibling.parentId;
-						previousSibling = sortedItems.find(({ id }) => id === parentId);
-					}
+	// 		if (!previousItem) {
+	// 			const nextItem = sortedItems[overIndex + 1];
+	// 			announcement = `${activeId} was ${movedVerb} before ${nextItem.id}.`;
+	// 		} else {
+	// 			if (projected.depth > previousItem.depth) {
+	// 				announcement = `${activeId} was ${nestedVerb} under ${previousItem.id}.`;
+	// 			} else {
+	// 				let previousSibling: FlattenedItem | undefined = previousItem;
+	// 				while (previousSibling && projected.depth < previousSibling.depth) {
+	// 					const parentId: UniqueIdentifier | null = previousSibling.parentId;
+	// 					previousSibling = sortedItems.find(({ id }) => id === parentId);
+	// 				}
 
-					if (previousSibling) {
-						announcement = `${activeId} was ${movedVerb} after ${previousSibling.id}.`;
-					}
-				}
-			}
+	// 				if (previousSibling) {
+	// 					announcement = `${activeId} was ${movedVerb} after ${previousSibling.id}.`;
+	// 				}
+	// 			}
+	// 		}
 
-			return announcement;
-		}
+	// 		return announcement;
+	// 	}
 
-		return;
-	}
+	// 	return;
+	// }
 }
 
-const adjustTranslate: Modifier = ({ transform }) => {
-	return {
-		...transform,
-		y: transform.y - 25,
-	};
-};
+// const adjustTranslate: Modifier = ({ transform }) => {
+// 	return {
+// 		...transform,
+// 		y: transform.y - 25,
+// 	};
+// };

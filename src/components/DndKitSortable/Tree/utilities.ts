@@ -5,7 +5,7 @@ import type { FlattenedItem, TreeItem, TreeItems } from "./types";
 
 // export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
-function getDragDepth(offset: number, indentationWidth: number) {
+export function getDragDepth(offset: number, indentationWidth: number) {
 	return Math.round(offset / indentationWidth);
 }
 
