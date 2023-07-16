@@ -21,7 +21,7 @@ type CustomOver = {
 export function SimpleDnd() {
 	const [parent, setParent] = useState<UniqueIdentifier | null>(null);
 	const [closeTo, setCloseTo] = useState<CloseTo>(null);
-	const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
+	// const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
 	// const [listenToMouse, setListenToMouse] = useState(false);
 
 	// useEffect(() => {
@@ -74,36 +74,42 @@ export function SimpleDnd() {
 			// setListenToMouse(false);
 			setCloseTo(null);
 		} else {
-			console.log('over id', over.id)
+			console.log("over id", over.id);
 			let draggableCenterY;
 			if (active.rect.current.translated) {
 				draggableCenterY = active.rect.current.translated?.top + active.rect.current.translated?.height / 2;
 			}
-			// let overCenterY;
+			let overCenterY;
 			let overHeight;
 			let overTop;
 			if (over) {
-				// overCenterY = over.rect.top + over.rect.height / 2;
+				overCenterY = over.rect.top + over.rect.height / 2;
 				overHeight = over.rect.height;
 				overTop = over.rect.top;
 			}
 
-			if (draggableCenterY && overHeight && overTop) {
-				if (draggableCenterY >= overTop && draggableCenterY <= overTop + overHeight / 4) {
-					setCloseTo("top");
-				} else if (
+			if (draggableCenterY && overHeight && overTop && overCenterY) {
+				if (
 					draggableCenterY >= overTop + overHeight / 4 &&
 					draggableCenterY <= overTop + (overHeight / 4) * 3
 				) {
 					setCloseTo("center");
-				} else if (
-					draggableCenterY >= overTop + (overHeight / 4) * 3 &&
-					draggableCenterY <= overTop + overHeight
-				) {
+				} else if (draggableCenterY < overCenterY) {
+					setCloseTo("top");
+				} else if (draggableCenterY > overCenterY) {
 					setCloseTo("bottom");
-				} else {
-					setCloseTo(null);
-				}
+				} 
+				
+				// else if (draggableCenterY >= overTop && draggableCenterY <= overTop + overHeight / 4) {
+				// 	setCloseTo("top");
+				// } else if (
+				// 	draggableCenterY >= overTop + (overHeight / 4) * 3 &&
+				// 	draggableCenterY <= overTop + overHeight
+				// ) {
+				// 	setCloseTo("bottom");
+				// } else {
+				// 	setCloseTo(null);
+				// }
 			}
 		}
 	}
