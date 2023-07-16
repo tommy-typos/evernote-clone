@@ -3,7 +3,6 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import classNames from "classnames";
 
 import styles from "./Page.module.css";
-import { TrashIcon } from "@heroicons/react/20/solid";
 
 export enum Position {
 	Before = -1,
@@ -23,11 +22,10 @@ export interface Props extends Omit<HTMLAttributes<HTMLButtonElement>, "id"> {
 	id: UniqueIdentifier;
 	index?: number;
 	layout: Layout;
-	onRemove?(): void;
 }
 
 export const Page = forwardRef<HTMLLIElement, Props>(function Page(
-	{ id, index, active, clone, insertPosition, layout, onRemove, style, ...props },
+	{ id, index, active, clone, insertPosition, layout, style, ...props },
 	ref
 ) {
 	return (
@@ -44,11 +42,7 @@ export const Page = forwardRef<HTMLLIElement, Props>(function Page(
 			ref={ref}
 		>
 			<button className={styles.Page} data-id={id.toString()} {...props} />
-			{!active && onRemove ? (
-				<button className={styles.Remove} onClick={onRemove}>
-					<TrashIcon className="h-4 w-4" />
-				</button>
-			) : null}
+			
 			{index != null ? <span className={styles.PageNumber}>{index}</span> : null}
 		</li>
 	);

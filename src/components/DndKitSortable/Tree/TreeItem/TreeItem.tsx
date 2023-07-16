@@ -3,9 +3,9 @@ import classNames from "classnames";
 
 import { Action, Remove} from "../Action";
 import styles from "./TreeItem.module.css";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
-	childCount?: number;
 	clone?: boolean;
 	collapsed?: boolean;
 	depth: number;
@@ -13,9 +13,8 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
 	disableSelection?: boolean;
 	ghost?: boolean;
 	handleProps?: any;
-	indicator?: boolean;
 	indentationWidth: number;
-	value: string;
+	value: UniqueIdentifier;
 	onCollapse?(): void;
 	onRemove?(): void;
 	wrapperRef?(node: HTMLLIElement): void;
@@ -25,7 +24,6 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
 export const TreeItem = forwardRef<HTMLDivElement, Props>(
 	(
 		{
-			childCount,
 			clone,
 			depth,
 			disableSelection,
@@ -33,7 +31,6 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 			ghost,
 			handleProps,
 			indentationWidth,
-			indicator,
 			collapsed,
 			onCollapse,
 			onRemove,
@@ -53,7 +50,6 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 					styles.Wrapper,
 					clone && styles.clone,
 					ghost && styles.ghost,
-					indicator && styles.indicator,
 					disableSelection && styles.disableSelection,
 					disableInteraction && styles.disableInteraction
 				)}
@@ -76,7 +72,6 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 					)}
 					<span className={styles.Text}>{value}</span>
 					{!clone && onRemove && <Remove onClick={onRemove} />}
-					{clone && childCount && childCount > 1 ? <span className={styles.Count}>{childCount}</span> : null}
 				</div>
 			</li>
 		);

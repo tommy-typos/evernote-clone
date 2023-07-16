@@ -14,7 +14,6 @@ import {
 	DragOverEvent,
 	MeasuringStrategy,
 	DropAnimation,
-	Modifier,
 	defaultDropAnimation,
 	UniqueIdentifier,
 } from "@dnd-kit/core";
@@ -24,7 +23,6 @@ import {
 	buildTree,
 	flattenTree,
 	getProjection,
-	getChildCount,
 	removeItem,
 	removeChildrenOf,
 	setProperty,
@@ -67,7 +65,6 @@ interface Props {
 	collapsible?: boolean;
 	defaultItems?: TreeItems;
 	indentationWidth?: number;
-	indicator?: boolean;
 	removable?: boolean;
 }
 
@@ -81,7 +78,6 @@ const customPointerSensorOptions: PointerSensorOptions = {
 export function SortableTree({
 	collapsible,
 	defaultItems = initialItems,
-	indicator = false,
 	indentationWidth = 50,
 	removable,
 }: Props) {
@@ -92,7 +88,7 @@ export function SortableTree({
 
 	const flattenedItems = useMemo(() => {
 		const flattenedTree = flattenTree(items);
-		const collapsedItems = flattenedTree.reduce<string[]>(
+		const collapsedItems = flattenedTree.reduce<UniqueIdentifier[]>(
 			(acc, { children, collapsed, id }) => (collapsed && children.length ? [...acc, id] : acc),
 			[]
 		);
@@ -127,7 +123,6 @@ export function SortableTree({
 						value={id}
 						depth={id === activeId && projected ? projected.depth : depth}
 						indentationWidth={indentationWidth}
-						indicator={indicator}
 						collapsed={Boolean(collapsed && children.length)}
 						onCollapse={collapsible && children.length ? () => handleCollapse(id) : undefined}
 						onRemove={removable ? () => handleRemove(id) : undefined}
@@ -136,14 +131,12 @@ export function SortableTree({
 				{createPortal(
 					<DragOverlay
 						dropAnimation={dropAnimationConfig}
-						modifiers={indicator ? [adjustTranslate] : undefined}
 					>
 						{activeId && activeItem ? (
 							<SortableTreeItem
 								id={activeId}
 								depth={activeItem.depth}
 								clone
-								childCount={getChildCount(items, activeId) + 1}
 								value={activeId.toString()}
 								indentationWidth={indentationWidth}
 							/>
@@ -213,10 +206,3 @@ export function SortableTree({
 		);
 	}
 }
-
-const adjustTranslate: Modifier = ({ transform }) => {
-	return {
-		...transform,
-		y: transform.y - 25,
-	};
-};

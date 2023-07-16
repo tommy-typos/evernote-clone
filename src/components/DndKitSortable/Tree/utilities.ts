@@ -163,22 +163,6 @@ export function setProperty<T extends keyof TreeItem>(
 	return [...items];
 }
 
-function countChildren(items: TreeItem[], count = 0): number {
-	return items.reduce((acc, { children }) => {
-		if (children.length) {
-			return countChildren(children, acc + 1);
-		}
-
-		return acc + 1;
-	}, count);
-}
-
-export function getChildCount(items: TreeItems, id: UniqueIdentifier) {
-	const item = findItemDeep(items, id);
-
-	return item ? countChildren(item.children) : 0;
-}
-
 export function removeChildrenOf(items: FlattenedItem[], ids: UniqueIdentifier[]) {
 	const excludeParentIds = [...ids];
 

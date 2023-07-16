@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Action, ActionProps } from ".";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 

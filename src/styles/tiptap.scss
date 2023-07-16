@@ -14,9 +14,8 @@
 .ProseMirror {
 	outline: none;
 	padding: 48px;
-	color: white;
 	height: 100%;
-	
+	color: white;
 
 	a {
 		color: var(--blue-500);
@@ -49,7 +48,7 @@
 	[data-checked="true"] > div > p {
 		text-decoration: line-through;
 		font-style: italic;
-		color: var(--slate-300)
+		color: var(--slate-300);
 	}
 
 	h1 {
@@ -148,4 +147,4 @@
 	float: left;
 	height: 0;
 	pointer-events: none;
-  }
+}

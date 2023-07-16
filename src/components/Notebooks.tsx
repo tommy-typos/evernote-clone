@@ -3,7 +3,7 @@ import { DndSortable } from "./DndSortable";
 
 export function Notebooks() {
 	return (
-		<div className="h-full overflow-y-auto bg-slate-950 p-2">
+		<div className="h-full overflow-y-auto bg-orange-500 p-2">
 			<DndSortable />
 		</div>
 	);

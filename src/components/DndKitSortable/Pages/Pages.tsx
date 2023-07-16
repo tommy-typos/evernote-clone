@@ -94,9 +94,6 @@ export function Pages({layout}: Props) {
               key={id}
               layout={layout}
               activeIndex={activeIndex}
-              onRemove={() =>
-                setItems((items) => items.filter((itemId) => itemId !== id))
-              }
             />
           ))}
         </ul>

@@ -13,8 +13,8 @@ export function DndSortable() {
 	return (
 		<>
 			<SortableTreeClient collapsible removable defaultItems={initialItems2} />
-			<Pages layout={Layout.Vertical} />
-			<SimpleDnd />
+			{/* <Pages layout={Layout.Vertical} />
+			<SimpleDnd /> */}
 		</>
 	);
 }
