@@ -5,7 +5,6 @@ import { CSS } from "@dnd-kit/utilities";
 
 
 import { TreeItem, Props as TreeItemProps } from "./TreeItem";
-// import {iOS} from '../../utilities';
 
 interface Props extends TreeItemProps {
 	id: UniqueIdentifier;
@@ -41,7 +40,6 @@ export function SortableTreeItem({ id, depth, ...props }: Props) {
 			style={style}
 			depth={depth}
 			ghost={isDragging}
-			//   disableSelection={iOS}
 			disableSelection={/iPad|iPhone|iPod/.test(navigator.platform)}
 			disableInteraction={isSorting}
 			handleProps={{

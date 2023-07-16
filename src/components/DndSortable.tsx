@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { Pages } from "./DndKitSortable/Pages/Pages";
 import { Layout } from "./DndKitSortable/Pages/Page";
 import { SimpleDnd } from "./DndKitSortable/SimpleDnd/SimpleDnd";
-import { Offset } from "./Offset";
 
 const SortableTreeClient = dynamic(() => Promise.resolve(SortableTree), {
 	ssr: false,
@@ -13,10 +12,9 @@ const SortableTreeClient = dynamic(() => Promise.resolve(SortableTree), {
 export function DndSortable() {
 	return (
 		<>
-			{/* <SortableTreeClient collapsible removable defaultItems={initialItems2}/>
-			<Pages layout={Layout.Vertical}/> */}
+			<SortableTreeClient collapsible removable defaultItems={initialItems2} />
+			<Pages layout={Layout.Vertical} />
 			<SimpleDnd />
-			{/* <Offset /> */}
 		</>
 	);
 }
@@ -28,7 +26,7 @@ const initialItems2: TreeItems = [
 	},
 	{
 		id: "Collections",
-		children: [],
+		children: [{ id: "Spring", children: [] }],
 	},
 	{
 		id: "About Us",
@@ -38,11 +36,6 @@ const initialItems2: TreeItems = [
 		id: "505",
 		children: [],
 	},
-	{
-		id: "Eminem",
-		children: [],
-	},
-	
 ];
 
 export const initialItems: TreeItems = [

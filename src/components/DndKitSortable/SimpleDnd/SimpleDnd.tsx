@@ -21,7 +21,6 @@ type CustomOver = {
 export function SimpleDnd() {
 	const [parent, setParent] = useState<UniqueIdentifier | null>(null);
 	const [closeTo, setCloseTo] = useState<CloseTo>(null);
-	// const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
 	// const [listenToMouse, setListenToMouse] = useState(false);
 
 	// useEffect(() => {
@@ -34,10 +33,6 @@ export function SimpleDnd() {
 	// 		document.removeEventListener("mousemove", handleMouseMove);
 	// 	};
 	// }, [listenToMouse]);
-
-	useEffect(() => {
-		// console.log(closeTo);
-	}, [closeTo]);
 
 	return (
 		<DndContext
@@ -99,17 +94,6 @@ export function SimpleDnd() {
 				} else if (draggableCenterY > overCenterY) {
 					setCloseTo("bottom");
 				} 
-				
-				// else if (draggableCenterY >= overTop && draggableCenterY <= overTop + overHeight / 4) {
-				// 	setCloseTo("top");
-				// } else if (
-				// 	draggableCenterY >= overTop + (overHeight / 4) * 3 &&
-				// 	draggableCenterY <= overTop + overHeight
-				// ) {
-				// 	setCloseTo("bottom");
-				// } else {
-				// 	setCloseTo(null);
-				// }
 			}
 		}
 	}

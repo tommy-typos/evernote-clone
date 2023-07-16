@@ -1,7 +1,7 @@
 import React, { forwardRef, HTMLAttributes } from "react";
 import classNames from "classnames";
 
-import { Action, Handle, Remove } from "../../../Item/components";
+import { Action, Remove} from "../Action";
 import styles from "./TreeItem.module.css";
 
 export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
@@ -60,16 +60,12 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 				ref={wrapperRef}
 				style={
 					{
-						"--spacing": `${indentationWidth * depth}px`
+						"--spacing": `${indentationWidth * depth}px`,
 					} as React.CSSProperties
 				}
 				{...props}
 			>
-				<div className={styles.TreeItem} ref={ref} 
-				style={style} 
-				// style={{backgroundColor: isOver ? "yellow" : "white"}}
-				>
-					{/* <Handle {...handleProps} /> */}
+				<div className={styles.TreeItem} ref={ref} style={style}>
 					{onCollapse && (
 						<Action
 							onClick={onCollapse}
@@ -78,8 +74,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 							{collapseIcon}
 						</Action>
 					)}
-					{/* <span>N</span> */}
-					<span  className={styles.Text}>{value}</span>
+					<span className={styles.Text}>{value}</span>
 					{!clone && onRemove && <Remove onClick={onRemove} />}
 					{clone && childCount && childCount > 1 ? <span className={styles.Count}>{childCount}</span> : null}
 				</div>
