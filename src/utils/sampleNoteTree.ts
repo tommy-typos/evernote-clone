@@ -1,27 +1,5 @@
 import { TreeItems } from "@/components/DndKitSortable/Tree/types";
 
-const initialItems2: TreeItems = [
-	{
-		id: "note1id",
-		noteName: "note 1",
-		children: [],
-	},
-	{
-		id: "note2id",
-		noteName: "note 2",
-		children: [{ id: "note3id", noteName: "note 3", children: [] }],
-	},
-	{
-		id: "note4id",
-		noteName: "note 4",
-		children: [],
-	},
-	{
-		id: "note5id",
-		noteName: "note 5",
-		children: [],
-	},
-];
 
 export const initialItems: TreeItems = [
 	{
@@ -53,3 +31,28 @@ export const initialItems: TreeItems = [
 		],
 	},
 ];
+
+export const initialItems2: TreeItems = [
+	{
+		id: "note1id",
+		noteName: "note 1",
+		children: [],
+	},
+	{
+		id: "note2id",
+		noteName: "note 2",
+		children: [{ id: "note3id", noteName: "note 3", children: [] }],
+	},
+	{
+		id: "note4id",
+		noteName: "note 4",
+		children: [],
+	},
+	{
+		id: "note5id",
+		noteName: "note 5",
+		children: [],
+	},
+];
+
+

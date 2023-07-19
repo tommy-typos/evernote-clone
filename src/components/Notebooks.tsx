@@ -7,6 +7,8 @@ import { SimpleDnd } from "./DndKitSortable/SimpleDnd/SimpleDnd";
 import { NoteIDandTitlewithNoteType } from "./folder1/App";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getNoteTree } from "@/utils/functions1";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import Deneme from "./Deneme";
 
 const SortableTreeClient = dynamic(() => Promise.resolve(SortableTree), {
 	ssr: false,
@@ -26,7 +28,8 @@ export function Notebooks({ selectedNote, setSelectedNote, items, setItems }: Pr
 	// 	setNoteTreeItems(getNoteTree());
 	// }, []);
 	return (
-		<div className={`h-full overflow-y-auto p-2 `}>
+		<div className={`h-full overflow-y-auto p-2  `}>
+			<p className="text-slate-300 mb-1">Notes</p>
 			<SortableTreeClient
 				items={items}
 				setItems={setItems}
@@ -36,8 +39,9 @@ export function Notebooks({ selectedNote, setSelectedNote, items, setItems }: Pr
 				// defaultItems={noteTreeItems}
 				setSelectedNote={setSelectedNote}
 			/>
-			{/* <Pages layout={Layout.Vertical} />
-			<SimpleDnd /> */}
+			{/* <Pages layout={Layout.Vertical} /> */}
+			{/* <SimpleDnd /> */}
+			{/* <Deneme /> */}
 		</div>
 	);
 }

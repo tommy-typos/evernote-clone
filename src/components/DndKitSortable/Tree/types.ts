@@ -6,6 +6,7 @@ export interface TreeItem {
   noteName: string;
   children: TreeItem[];
   collapsed?: boolean;
+  isFavorite?: boolean;
 }
 
 export type TreeItems = TreeItem[];

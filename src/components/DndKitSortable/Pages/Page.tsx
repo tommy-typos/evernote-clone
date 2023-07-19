@@ -41,9 +41,10 @@ export const Page = forwardRef<HTMLLIElement, Props>(function Page(
 			style={style}
 			ref={ref}
 		>
-			<button className={styles.Page} data-id={id.toString()} {...props} />
-			
-			{index != null ? <span className={styles.PageNumber}>{index}</span> : null}
+			<button className={classNames(styles.Page, "bg-slate-700  text-white")} data-id={id.toString()} {...props}>
+				{id}
+			</button>
 		</li>
 	);
 });
+

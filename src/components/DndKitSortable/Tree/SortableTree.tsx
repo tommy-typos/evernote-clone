@@ -137,12 +137,13 @@ export function SortableTree({
 				onDragCancel={handleDragCancel}
 			>
 				<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-					{flattenedItems.map(({ id, children, collapsed, depth, noteName }) => (
+					{flattenedItems.map(({ id, children, collapsed, depth, noteName, isFavorite }) => (
 						<SortableTreeItem
 							key={id}
 							id={id}
 							noteName={noteName}
 							noteId={id}
+							isFavorite={isFavorite}
 							depth={id === activeId && projected ? projected.depth : depth}
 							indentationWidth={indentationWidth}
 							collapsed={Boolean(collapsed && children.length)}
@@ -151,6 +152,7 @@ export function SortableTree({
 							onAddChild={() => handleAddChild(id)}
 							selectedNote={selectedNote}
 							setSelectedNote={setSelectedNote}
+							onMakeFavorite={() => handleMakeFavorite(id)}
 						/>
 					))}
 					{createPortal(
@@ -225,7 +227,7 @@ export function SortableTree({
 	}
 
 	function handleRemove(id: UniqueIdentifier) {
-		setItems((items) => removeItem(items, id));
+		setItems((items) => removeItem(items, id, selectedNote, setSelectedNote));
 	}
 
 	function handleAddChild(id: UniqueIdentifier) {
@@ -239,6 +241,14 @@ export function SortableTree({
 	function handleCollapse(id: UniqueIdentifier) {
 		setItems((items) =>
 			setProperty(items, id, "collapsed", (value) => {
+				return !value;
+			})
+		);
+	}
+
+	function handleMakeFavorite(id: UniqueIdentifier) {
+		setItems((items) =>
+			setProperty(items, id, "isFavorite", (value) => {
 				return !value;
 			})
 		);

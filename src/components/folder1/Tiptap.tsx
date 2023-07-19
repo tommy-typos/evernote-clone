@@ -70,11 +70,12 @@ const Tiptap = ({ selectedNote, changeNoteTitle }: Props) => {
 				noteContent.current = userDailyNoteData[noteID.current] ?? "";
 
 				let temp = noteID.current.split("-");
-				noteTitle.current = new Date(
+				noteTitle.current = "📅 " + new Date(
 					parseInt(temp[0]),
 					parseInt(temp[1]) - 1,
 					parseInt(temp[2])
 				).toLocaleDateString("en-US", formatOptions);
+
 				ifDailyThenIsToday.current = isToday(
 					new Date(parseInt(temp[0]), parseInt(temp[1]) - 1, parseInt(temp[2]))
 				);

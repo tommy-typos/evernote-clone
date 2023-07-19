@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import '@/styles/calendar.scss'
 import '@/styles/calendar-colors.css'
 import '@/styles/tiptap.scss'
+import "@/styles/reactMenu.css"
 
 import type { AppProps } from 'next/app'
 

@@ -128,7 +128,12 @@ export function findItemDeep(items: TreeItems, itemId: UniqueIdentifier): TreeIt
 	return undefined;
 }
 
-export function removeItem(items: TreeItems, id: UniqueIdentifier) {
+export function removeItem(
+	items: TreeItems,
+	id: UniqueIdentifier,
+	selectedNote: NoteIDandTitlewithNoteType,
+	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>
+) {
 	const newItems = [];
 
 	for (const item of items) {
@@ -137,10 +142,14 @@ export function removeItem(items: TreeItems, id: UniqueIdentifier) {
 		}
 
 		if (item.children.length) {
-			item.children = removeItem(item.children, id);
+			item.children = removeItem(item.children, id, selectedNote, setSelectedNote);
 		}
 
 		newItems.push(item);
+	}
+
+	if (selectedNote && selectedNote.split(",")[1] === id) {
+		setSelectedNote(undefined);
 	}
 
 	return newItems;
@@ -149,14 +158,14 @@ export function removeItem(items: TreeItems, id: UniqueIdentifier) {
 // change note name
 export function changeItemName(items: TreeItems, id: UniqueIdentifier, name: string) {
 	const newItems = [];
-	for(const item of items) {
+	for (const item of items) {
 		let nameChanged = false;
-		if(item.id === id) {
+		if (item.id === id) {
 			item.noteName = name;
 			nameChanged = true;
 		}
-		
-		if(!nameChanged && item.children.length) {
+
+		if (!nameChanged && item.children.length) {
 			item.children = changeItemName(item.children, id, name);
 		}
 
@@ -167,7 +176,11 @@ export function changeItemName(items: TreeItems, id: UniqueIdentifier, name: str
 }
 
 // adding sub note
-export function addNewNote(items: TreeItems, parentId: UniqueIdentifier | null, setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>) {
+export function addNewNote(
+	items: TreeItems,
+	parentId: UniqueIdentifier | null,
+	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>
+) {
 	let newItems = [];
 	let idForNewNote = nanoid();
 	if (parentId !== null) {
@@ -199,7 +212,7 @@ export function addNewNote(items: TreeItems, parentId: UniqueIdentifier | null, 
 		newItems = [...items];
 	}
 
-	setSelectedNote(`regularNote,${idForNewNote},`)
+	setSelectedNote(`regularNote,${idForNewNote},`);
 
 	return newItems;
 }

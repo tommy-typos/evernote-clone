@@ -1,18 +1,11 @@
 .Wrapper {
 	position: relative;
 	list-style: none;
-	width: 150px;
-	margin-bottom: 0.5rem;
-	border: 1px solid black;
+	padding-bottom: 8px;
 
 	&.active {
 		.Page {
-			background-image: none !important;
-			background-color: rgba(230, 230, 230);
-		}
-
-		.PageNumber {
-			opacity: 0.3;
+			opacity: 50%;
 		}
 	}
 
@@ -22,6 +15,7 @@
 			animation: pop 150ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
 			box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 6px 0 rgba(34, 33, 81, 0.3);
 			cursor: grabbing;
+			opacity: 50%;
 		}
 	}
 
@@ -35,56 +29,23 @@
 			}
 		}
 	}
-
-	&:not(.vertical) {
-		&.insertBefore,
-		&.insertAfter {
-			.Page:after {
-				top: 0;
-				bottom: 0;
-				width: 2px;
-			}
-		}
-		&.insertBefore {
-			&.clone {
-				margin-left: -75px;
-			}
-			.Page:after {
-				left: -9px;
-			}
-		}
-		&.insertAfter {
-			&.clone {
-				margin-left: 75px;
-			}
-			.Page:after {
-				right: -9px;
-			}
-		}
-	}
 	&.vertical {
 		&.insertBefore,
 		&.insertAfter {
 			.Page:after {
-				left: 0;
+				left: 0px;
 				right: 0;
-				height: 2px;
+				height: 4px;
 			}
 		}
 		&.insertBefore {
-			&.clone {
-				margin-top: -125px;
-			}
 			.Page:after {
-				top: -15px;
+				top: -6px;
 			}
 		}
 		&.insertAfter {
-			&.clone {
-				margin-bottom: 125px;
-			}
 			.Page:after {
-				bottom: -45px;
+				bottom: -6px;
 			}
 		}
 	}
@@ -95,40 +56,10 @@
 	display: block;
 	width: 100%;
 	height: 30px;
-	background-color: rgb(250, 255, 255);
-	background-size: cover;
-	border-radius: 3px;
-	box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(34, 33, 81, 0.15);
 	outline: none;
 	appearance: none;
-	border: none;
 	touch-action: none;
 	cursor: grab;
-
-	&:focus-visible:not(.active &) {
-		box-shadow: 0 0 0 2px #4c9ffe;
-	}
-
-	&[data-id="1"] {
-		background-color: red;
-	}
-	&[data-id="2"] {
-		background-color: blue;
-	}
-	&[data-id="3"] {
-		background-color: green;
-	}
-	
-}
-
-.PageNumber {
-	display: inline-block;
-	width: 100%;
-	text-align: center;
-	color: white;
-	user-select: none;
-	animation: fadeIn 1000ms ease;
-	user-select: none;
 }
 
 @keyframes fadeIn {
