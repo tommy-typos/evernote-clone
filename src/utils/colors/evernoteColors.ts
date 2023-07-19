@@ -190,7 +190,6 @@ export function getFontColorsDarkMode() {
 	return Object.values(FontColorsDarkMode).map((fontColorDarkMode) => {
 		return {
 			id: fontColorDarkMode.id,
-			twClass: fontColorDarkMode.twClass,
 			twHex: fontColorDarkMode.twHex,
 			twRGB: fontColorDarkMode.twRGB,
 		};
@@ -201,7 +200,6 @@ export function getHighlightColorsDarkMode() {
 	return Object.values(HighlightColorsDarkMode).map((highlightColorDarkMode) => {
 		return {
 			id: highlightColorDarkMode.id,
-			twClass: highlightColorDarkMode.twClass,
 			twHex: highlightColorDarkMode.twHex,
 			twRGB: highlightColorDarkMode.twRGB,
 		};

@@ -4,7 +4,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import React, { Dispatch, SetStateAction, forwardRef } from "react";
 import { ArrowUturnLeftIcon, ArrowUturnRightIcon } from "@heroicons/react/20/solid";
 import { ColorSelector } from "./FontColorSelector";
-import { Highlighter, ListOrdered, List, ListChecks, TextQuote, Quote } from "lucide-react";
+import { Highlighter, ListOrdered, List, ListChecks} from "lucide-react";
 import {
 	FontBoldIcon,
 	FontItalicIcon,
@@ -16,12 +16,11 @@ import {
 	QuoteIcon,
 	DividerHorizontalIcon,
 } from "@radix-ui/react-icons";
-import { ColorHex } from "@/utils/evernoteColors";
-import { twColors } from "@/utils/tailwindColors";
+import { ColorHex } from "@/utils/colors/evernoteColors";
 import { ColorHexOrAuto } from "../folder1/Tiptap";
 import { HighlightSelector } from "./HighlightSelector";
 import { HeadingLevelSelector } from "./HeadingSelector";
-import { isExactListTypeActive } from "../tiptap/isExactListTypeActive";
+import { isExactListTypeActive } from "../../utils/tiptap/isExactListTypeActive";
 
 type Props = {
 	editor: Editor | null;
@@ -133,12 +132,12 @@ export function ToolbarComponent({
 							onClick={() => editor.chain().focus().toggleHighlight({ color: highlightColor }).run()}
 							disabled={!editor.can().chain().focus().toggleHighlight().run()}
 							style={{
-								backgroundColor: editor.isActive("highlight") ? highlightColor : twColors["slate-900"],
+								backgroundColor: editor.isActive("highlight") ? highlightColor : "var(--slate-900)",
 							}}
 						>
 							<Highlighter
 								style={{
-									stroke: editor.isActive("highlight") ? twColors["slate-900"] : highlightColor,
+									stroke: editor.isActive("highlight") ? "var(--slate-900)" : highlightColor,
 								}}
 								className="mx-2 h-5 w-5"
 							/>

@@ -2,8 +2,8 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import * as Select from "@radix-ui/react-select";
 import { Editor } from "@tiptap/core";
 import React, { Dispatch, SetStateAction, forwardRef } from "react";
-import { ColorHex, getHighlightColorsDarkMode } from "@/utils/evernoteColors";
-import { twColors } from "@/utils/tailwindColors";
+import { ColorHex, getHighlightColorsDarkMode } from "@/utils/colors/evernoteColors";
+// import { twColors } from "@/utils/colors/twTheme";
 import { TooltipProvider } from "./Toolbar";
 
 type HighlightSelectorProps = {
@@ -32,7 +32,7 @@ export const HighlightSelector = forwardRef(
 					>
 						<Select.Icon>
 							<ChevronDownIcon
-								style={{ color: isActive ? highlightColor : twColors["slate-50"] }}
+								style={{ color: isActive ? highlightColor : "var(--slate-50)" }}
 								className={`h-4 w-4  ${isActive ? "scale-125" : ""} `}
 							/>
 						</Select.Icon>

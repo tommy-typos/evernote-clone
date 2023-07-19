@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
 	DndContext,
@@ -25,12 +25,18 @@ import {
 	getProjection,
 	removeItem,
 	removeChildrenOf,
+	addNewNote,
 	setProperty,
 } from "./utilities";
 import type { FlattenedItem, TreeItems } from "./types";
 import { SortableTreeItem } from "./TreeItem";
 import { CSS } from "@dnd-kit/utilities";
-import { initialItems } from "@/components/DndSortable";
+import { initialItems } from "@/utils/sampleNoteTree";
+
+import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
+import { Dispatch, SetStateAction } from "react";
+import { getNoteTree, saveNoteTreeToLocalStorage } from "@/utils/functions1";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 const measuring = {
 	droppable: {
@@ -63,9 +69,13 @@ const dropAnimationConfig: DropAnimation = {
 
 interface Props {
 	collapsible?: boolean;
-	defaultItems?: TreeItems;
+	// defaultItems?: TreeItems;
 	indentationWidth?: number;
 	removable?: boolean;
+	selectedNote: NoteIDandTitlewithNoteType;
+	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
+	items: TreeItems;
+	setItems: React.Dispatch<React.SetStateAction<TreeItems>>;
 }
 
 const customPointerSensorOptions: PointerSensorOptions = {
@@ -77,11 +87,15 @@ const customPointerSensorOptions: PointerSensorOptions = {
 
 export function SortableTree({
 	collapsible,
-	defaultItems = initialItems,
+	// defaultItems = initialItems,
 	indentationWidth = 50,
 	removable,
+	selectedNote,
+	setSelectedNote,
+	items,
+	setItems,
 }: Props) {
-	const [items, setItems] = useState(() => defaultItems);
+	// const [items, setItems] = useState<TreeItems>(() => getNoteTree());
 	const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 	const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
 	const [offsetLeft, setOffsetLeft] = useState(0);
@@ -104,48 +118,64 @@ export function SortableTree({
 	const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [flattenedItems]);
 	const activeItem = activeId ? flattenedItems.find(({ id }) => id === activeId) : null;
 
+	// console.log(JSON.stringify(items, null, 2));
+
+	useEffect(() => {
+		saveNoteTreeToLocalStorage(items);
+	}, [items]);
+
 	return (
-		<DndContext
-			sensors={sensors}
-			collisionDetection={closestCenter}
-			measuring={measuring}
-			onDragStart={handleDragStart}
-			onDragMove={handleDragMove}
-			onDragOver={handleDragOver}
-			onDragEnd={handleDragEnd}
-			onDragCancel={handleDragCancel}
-		>
-			<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-				{flattenedItems.map(({ id, children, collapsed, depth }) => (
-					<SortableTreeItem
-						key={id}
-						id={id}
-						value={id}
-						depth={id === activeId && projected ? projected.depth : depth}
-						indentationWidth={indentationWidth}
-						collapsed={Boolean(collapsed && children.length)}
-						onCollapse={collapsible && children.length ? () => handleCollapse(id) : undefined}
-						onRemove={removable ? () => handleRemove(id) : undefined}
-					/>
-				))}
-				{createPortal(
-					<DragOverlay
-						dropAnimation={dropAnimationConfig}
-					>
-						{activeId && activeItem ? (
-							<SortableTreeItem
-								id={activeId}
-								depth={activeItem.depth}
-								clone
-								value={activeId.toString()}
-								indentationWidth={indentationWidth}
-							/>
-						) : null}
-					</DragOverlay>,
-					document.body
-				)}
-			</SortableContext>
-		</DndContext>
+		<>
+			<DndContext
+				sensors={sensors}
+				collisionDetection={closestCenter}
+				measuring={measuring}
+				onDragStart={handleDragStart}
+				onDragMove={handleDragMove}
+				onDragOver={handleDragOver}
+				onDragEnd={handleDragEnd}
+				onDragCancel={handleDragCancel}
+			>
+				<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
+					{flattenedItems.map(({ id, children, collapsed, depth, noteName }) => (
+						<SortableTreeItem
+							key={id}
+							id={id}
+							noteName={noteName}
+							noteId={id}
+							depth={id === activeId && projected ? projected.depth : depth}
+							indentationWidth={indentationWidth}
+							collapsed={Boolean(collapsed && children.length)}
+							onCollapse={collapsible && children.length ? () => handleCollapse(id) : undefined}
+							onRemove={removable ? () => handleRemove(id) : undefined}
+							onAddChild={() => handleAddChild(id)}
+							selectedNote={selectedNote}
+							setSelectedNote={setSelectedNote}
+						/>
+					))}
+					{createPortal(
+						<DragOverlay dropAnimation={dropAnimationConfig}>
+							{activeId && activeItem ? (
+								<SortableTreeItem
+									id={activeId}
+									depth={activeItem.depth}
+									clone
+									// value={activeId.toString()}
+									noteName={activeItem.noteName ? activeItem.noteName : "Untitled"}
+									indentationWidth={indentationWidth}
+									// setSelectedNote={null}
+								/>
+							) : null}
+						</DragOverlay>,
+						document.body
+					)}
+				</SortableContext>
+			</DndContext>
+			<button className="flex w-full  items-center text-slate-50" onClick={() => handleAddTopLevelNote()}>
+				<PlusIcon className="mr-1 h-5 w-5" />
+				Add a note
+			</button>
+		</>
 	);
 
 	function handleDragStart({ active: { id: activeId } }: DragStartEvent) {
@@ -196,6 +226,14 @@ export function SortableTree({
 
 	function handleRemove(id: UniqueIdentifier) {
 		setItems((items) => removeItem(items, id));
+	}
+
+	function handleAddChild(id: UniqueIdentifier) {
+		setItems((items) => addNewNote(items, id, setSelectedNote));
+	}
+
+	function handleAddTopLevelNote() {
+		setItems((items) => addNewNote(items, null, setSelectedNote));
 	}
 
 	function handleCollapse(id: UniqueIdentifier) {

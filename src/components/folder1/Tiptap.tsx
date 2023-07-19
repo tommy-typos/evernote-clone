@@ -7,15 +7,16 @@ import StarterKit from "@tiptap/starter-kit";
 import { Color } from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import Link from "@tiptap/extension-link";
-import TiptapReactNode from "./TiptapReactComponent";
+import TiptapReactNode from "../EditorToolbar/TiptapReactComponent";
 import { ToolbarComponent } from "../EditorToolbar/Toolbar";
 import React, { useState, useRef, MutableRefObject, useEffect } from "react";
-import { getFontColorsDarkMode, getHighlightColorsDarkMode, ColorHex } from "@/utils/evernoteColors";
+import { getFontColorsDarkMode, getHighlightColorsDarkMode, ColorHex } from "@/utils/colors/evernoteColors";
 import { useEditor, EditorContent, Extension } from "@tiptap/react";
 import { Editor } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
-import { NoteIDwithNoteType, noteType } from "./App";
-import { debounce, isToday, saveToLocalStorage } from "@/utils/functions1";
+import { NoteIDandTitlewithNoteType, noteType } from "./App";
+import { debounce, isToday, saveNoteToLocalStorage } from "@/utils/functions1";
+import type { UniqueIdentifier } from "@dnd-kit/core";
 
 const TabKeepsFocusExtension = Extension.create({
 	name: "tabKeepsFocus",
@@ -37,16 +38,20 @@ export function generateAuto() {
 const formatOptions: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
 
 type Props = {
-	selectedNote: NoteIDwithNoteType;
+	selectedNote: NoteIDandTitlewithNoteType;
+	changeNoteTitle(noteId: UniqueIdentifier, title: string): void;
 };
 
-const Tiptap = ({ selectedNote }: Props) => {
+const Tiptap = ({ selectedNote, changeNoteTitle }: Props) => {
 	const [headingLevel, setHeadingLevel] = useState<string>("");
 	const [fontColor, setFontColor] = useState<ColorHexOrAuto>(generateAuto() as ColorHexOrAuto);
 	const [highlightColor, setHighlightColor] = useState<ColorHex>(getHighlightColorsDarkMode()[0].twHex);
 	const [selectionHasColor, setSelectionHasColor] = useState(false);
 
+	const [titleValue, setTitleValue] = useState("");
+
 	const timeoutRef = useRef<MutableRefObject<NodeJS.Timeout>>(null);
+	const timeoutRefforTitle = useRef<MutableRefObject<NodeJS.Timeout>>(null);
 
 	let noteContent = useRef<string>();
 	let noteID = useRef<string>();
@@ -77,10 +82,24 @@ const Tiptap = ({ selectedNote }: Props) => {
 				const userRegularNoteData = JSON.parse(window.localStorage.getItem("userRegularNotes")!) || {};
 				noteContent.current = userRegularNoteData[noteID.current] ?? "";
 
-				noteTitle.current = "note title";
+				// noteTitle.current = "note title";
+				noteTitle.current = selectedNote.split(",")[2];
+				//  ? selectedNote.split(",")[2] : "Untitled";
 			}
+
+			setTitleValue(noteTitle.current);
 		}
 	}, [selectedNote]);
+
+	useEffect(() => {
+		debounce(
+			() => {
+				changeNoteTitle(noteID.current as UniqueIdentifier, titleValue);
+			},
+			300,
+			timeoutRefforTitle as any
+		)();
+	}, [titleValue]);
 
 	//TODO: even selection changes cause this componenet re-render every time.
 	const editor = useEditor(
@@ -120,7 +139,7 @@ const Tiptap = ({ selectedNote }: Props) => {
 
 				debounce(
 					() => {
-						saveToLocalStorage(editor.getHTML(), noteID.current!, noteType.current!);
+						saveNoteToLocalStorage(editor.getHTML(), noteID.current!, noteType.current!);
 					},
 					undefined,
 					timeoutRef as any
@@ -134,14 +153,14 @@ const Tiptap = ({ selectedNote }: Props) => {
 					setSelectionHasColor(false);
 				}
 				stuffTodo(editor);
-				console.log(editor.getHTML());
+				// console.log(editor.getHTML());
 			},
 
 			onFocus({ editor, event }) {
 				stuffTodo(editor);
 			},
-			content: `<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3><p>Normal text</p><p><strong>bold text    </strong><em>italic text   </em><u>underline</u>    <s>strikethrough</s></p><ul><li><p>bullet</p></li></ul><ol><li><p>order</p></li></ol><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p></div></li></ul><ul><li><p>bullet</p><ol><li><p>order</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p><ul><li><p>fdlsjfls</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>sdfkldsf</p><ol><li><p>dslfjsdlfk</p></li></ol></div></li></ul></li></ul></div></li></ul></li></ol></li></ul><blockquote><p>quote</p><p>quote </p></blockquote><hr><p><strong><em><s><u>bold italic underline strike</u></s></em></strong>    <strong><em><u>bold italic underline</u></em></strong>     <strong><em>bold italic</em></strong></p><p><code>inline code</code> </p><pre><code>console.log('hello, friend')</code></pre><p>hello</p>`,
-			// content: noteContent.current,
+			// content: `<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3><p>Normal text</p><p><strong>bold text    </strong><em>italic text   </em><u>underline</u>    <s>strikethrough</s></p><ul><li><p>bullet</p></li></ul><ol><li><p>order</p></li></ol><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p></div></li></ul><ul><li><p>bullet</p><ol><li><p>order</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p><ul><li><p>fdlsjfls</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>sdfkldsf</p><ol><li><p>dslfjsdlfk</p></li></ol></div></li></ul></li></ul></div></li></ul></li></ol></li></ul><blockquote><p>quote</p><p>quote </p></blockquote><hr><p><strong><em><s><u>bold italic underline strike</u></s></em></strong>    <strong><em><u>bold italic underline</u></em></strong>     <strong><em>bold italic</em></strong></p><p><code>inline code</code> </p><pre><code>console.log('hello, friend')</code></pre><p>hello</p>`,
+			content: noteContent.current,
 			// content: `<ul><li><p>bullet</p><ol><li><p>ordered</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p></div></li></ul></li></ol></li></ul><p></p><ol><li><p>single ordered</p></li></ol><p></p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>single check</p></div></li></ul>`,
 			// content: `<p>Hello World! 🌎️</p>`,
 			// content: `<p>Hello World! 🌎️</p><react-component count=100></react-component>`,
@@ -193,15 +212,17 @@ const Tiptap = ({ selectedNote }: Props) => {
 				highlightColor={highlightColor}
 				setHighlightColor={setHighlightColor}
 			/>
-			<h1
+			<input
+				readOnly={noteType.current === "dailyNote"}
 				className={`${
 					ifDailyThenIsToday.current ? " text-blue-500" : " text-slate-50"
-				} bg-slate-900 pl-12 pt-6 text-4xl`}
-			>
-				{noteTitle.current}
-			</h1>
+				} bg-slate-900 pl-12 pt-6 text-4xl outline-none `}
+				value={titleValue}
+				placeholder="Untitled"
+				onChange={(e) => setTitleValue(e.target.value)}
+			></input>
 
-			<EditorContent editor={editor} className=" bg-slate-900 flex-grow" />
+			<EditorContent editor={editor} className="flex-grow bg-slate-900" />
 		</div>
 	);
 };

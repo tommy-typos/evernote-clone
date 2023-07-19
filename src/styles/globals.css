@@ -7,3 +7,14 @@ body,
 #__next {
 	height: 100%;
 }
+
+:root {
+	--slate-50: theme(colors.slate.50);
+	--slate-300: theme(colors.slate.300);
+	--slate-500: theme(colors.slate.500);
+	--slate-600: theme(colors.slate.600);
+	--slate-700: theme(colors.slate.700);
+	--slate-900: theme(colors.slate.900);
+	--slate-950: theme(colors.slate.950);
+	--blue-500: theme(colors.blue.500);
+}

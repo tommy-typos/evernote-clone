@@ -4,7 +4,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ColorWheelIcon } from "@/svgs/svgExporter";
 import { Half2Icon } from "@radix-ui/react-icons";
-import { ColorHex, getFontColorsDarkMode } from "@/utils/evernoteColors";
+import { ColorHex, getFontColorsDarkMode } from "@/utils/colors/evernoteColors";
 import { ColorHexOrAuto, generateAuto } from "../folder1/Tiptap";
 import { ColorSelectItem, SelectViewPort } from "./HighlightSelector";
 import { TooltipProvider } from "./Toolbar";

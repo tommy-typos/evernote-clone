@@ -1,9 +1,13 @@
 import React, { forwardRef, HTMLAttributes } from "react";
 import classNames from "classnames";
 
-import { Action, Remove} from "../Action";
+import { Action, Remove } from "../Action";
 import styles from "./TreeItem.module.css";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import { AddChild } from "../Action/AddChild";
+import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
+import { Dispatch, SetStateAction } from "react";
+import { twColors } from "@/utils/colors/twTheme";
 
 export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
 	clone?: boolean;
@@ -14,11 +18,15 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
 	ghost?: boolean;
 	handleProps?: any;
 	indentationWidth: number;
-	value: UniqueIdentifier;
+	noteName: string;
+	noteId?: UniqueIdentifier;
 	onCollapse?(): void;
 	onRemove?(): void;
+	onAddChild?(): void;
 	wrapperRef?(node: HTMLLIElement): void;
 	isOver?: boolean;
+	selectedNote?: NoteIDandTitlewithNoteType;
+	setSelectedNote?: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
 }
 
 export const TreeItem = forwardRef<HTMLDivElement, Props>(
@@ -34,10 +42,14 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 			collapsed,
 			onCollapse,
 			onRemove,
+			onAddChild,
 			style,
-			value,
+			noteName,
+			noteId,
 			wrapperRef,
 			isOver,
+			selectedNote,
+			setSelectedNote,
 			...props
 		},
 		ref
@@ -47,6 +59,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 			<li
 				{...handleProps}
 				className={classNames(
+					"group mb-1 ",
 					styles.Wrapper,
 					clone && styles.clone,
 					ghost && styles.ghost,
@@ -65,13 +78,26 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 					{onCollapse && (
 						<Action
 							onClick={onCollapse}
-							className={classNames(styles.Collapse, collapsed && styles.collapsed)}
+							className={classNames(styles.Collapse, collapsed && styles.collapsed, "mr-2")}
 						>
 							{collapseIcon}
 						</Action>
 					)}
-					<span className={styles.Text}>{value}</span>
-					{!clone && onRemove && <Remove onClick={onRemove} />}
+					<span
+						className={`${styles.Text} bg-slate-800 group-hover:bg-slate-700`}
+						onClick={() => {
+							if (setSelectedNote) {
+								setSelectedNote(`regularNote,${noteId},${noteName}`);
+							}
+						}}
+						style={{backgroundColor: selectedNote && selectedNote.split(",")[1] === noteId ? twColors.slate[700] : undefined }}
+					>
+						{noteName ? noteName : "Untitled"}
+					</span>
+					{!clone && onRemove && <Remove onClick={onRemove} className="invisible group-hover:visible" />}
+					{!clone && onAddChild && (
+						<AddChild onClick={onAddChild} className="invisible group-hover:visible" />
+					)}
 				</div>
 			</li>
 		);

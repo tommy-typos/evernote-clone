@@ -1,10 +1,4 @@
 :root {
-	--slate-300: #cbd5e1;
-	--slate-500: #64748b;
-	--slate-700: #334155;
-	--slate-950: #020617;
-	--blue-500: #3b82f6;
-	--neutral-600: #525252;
 	--text-base-16: 16px; // var(--text-base-16)
 	--text-xl-20: 20px; // var(--text-xl-20)
 	--text-2xl-24: 24px; // var(--text-2xl-24)
@@ -23,7 +17,7 @@
 	}
 
 	s {
-		color: var(--neutral-600);
+		color: var(--slate-600);
 	}
 
 	a:hover {

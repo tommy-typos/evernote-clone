@@ -1,13 +1,7 @@
-import { NodeType } from "@tiptap/pm/model";
-import { objectIncludes, getNodeType, NodeRange } from "@tiptap/react";
+import { getNodeType, NodeRange } from "@tiptap/react";
 import { Editor } from "@tiptap/core";
 
-export function isExactListTypeActive(
-	editor: Editor,
-	typeOrName: "bulletList" | "orderedList" | "taskList"
-	// typeOrName: NodeType | string | null,
-	// attributes: Record<string, any> = {}
-): boolean {
+export function isExactListTypeActive(editor: Editor, typeOrName: "bulletList" | "orderedList" | "taskList"): boolean {
 	const state = editor.state;
 	const { from, to, empty } = state.selection;
 	const type = typeOrName ? getNodeType(typeOrName, state.schema) : null;
@@ -36,7 +30,6 @@ export function isExactListTypeActive(
 		}
 		return type.name === nodeRange.node.type.name;
 	});
-	// .filter((nodeRange) => objectIncludes(nodeRange.node.attrs, attributes, { strict: false }));
 
 	if (empty) {
 		return !!matchedNodeRanges.length;

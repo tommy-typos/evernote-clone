@@ -1,21 +1,11 @@
 .Wrapper {
-	list-style: none;
-	box-sizing: border-box;
-	padding-left: var(--spacing);
-	margin-bottom: -1px;
-	margin-bottom: 2px;
-
 	&.clone {
+		margin-left: 30px;
+		margin-top: 5px;
 		display: inline-block;
 		pointer-events: none;
-		padding: 0;
-		padding-left: 10px;
-		padding-top: 5px;
 
 		.TreeItem {
-			--vertical-padding: 5px;
-
-			padding-right: 24px;
 			border-radius: 4px;
 			box-shadow: 0px 15px 15px 0 rgba(34, 33, 81, 0.1);
 		}
@@ -24,6 +14,9 @@
 	&.ghost {
 		opacity: 0.5;
 
+		.TreeItem {
+		}
+
 		.TreeItem > * {
 			box-shadow: none;
 			background-color: transparent;
@@ -31,37 +24,49 @@
 	}
 }
 
-.TreeItem {
-	--vertical-padding: 10px;
+.disableInteraction {
+	pointer-events: none;
+}
+/*
+* 
+* STABLE CODE
+* 
 
-	position: relative;
+li - wrapper
+	div - treeitem
+		button - action tree item collapse
+			svg
+	    span - treeitem text
+	    button - action
+		    svg
+*/
+
+.Wrapper {
+	list-style: none;
+	padding-left: var(--spacing);
+}
+
+.TreeItem {
 	display: flex;
 	align-items: center;
-	padding: var(--vertical-padding) 10px;
-	padding: 0 10px;
-	border-radius: 5px;
-	color: white;
-	box-sizing: border-box;
+	color: theme(colors[slate].50);
+
 	&:hover {
-		background-color: #0f172a;
+		background-color: theme(colors[slate].900);
 	}
 }
 
 .Text {
 	flex-grow: 1;
-	padding-left: 0.5rem;
+	padding: 0 8px;
 	white-space: nowrap;
-	text-overflow: ellipsis;
 	overflow: hidden;
-}
-
-.disableInteraction {
-	pointer-events: none;
+	text-overflow: ellipsis;
 }
 
 .Collapse {
 	svg {
-		transition: transform 250ms ease;
+		transition: transform 200ms ease;
 	}
 
 	&.collapsed svg {

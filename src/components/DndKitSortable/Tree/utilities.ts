@@ -2,6 +2,9 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
 import type { FlattenedItem, TreeItem, TreeItems } from "./types";
+import { nanoid } from "nanoid";
+import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
+import { Dispatch, SetStateAction } from "react";
 
 function getDragDepth(offset: number, indentationWidth: number) {
 	return Math.round(offset / indentationWidth);
@@ -85,16 +88,16 @@ export function flattenTree(items: TreeItems): FlattenedItem[] {
 }
 
 export function buildTree(flattenedItems: FlattenedItem[]): TreeItems {
-	const root: TreeItem = { id: "root", children: [] };
+	const root: TreeItem = { id: "root", noteName: "root", children: [] };
 	const nodes: Record<string, TreeItem> = { [root.id]: root };
 	const items = flattenedItems.map((item) => ({ ...item, children: [] }));
 
 	for (const item of items) {
-		const { id, children } = item;
+		const { id, noteName, children } = item;
 		const parentId = item.parentId ?? root.id;
 		const parent = nodes[parentId] ?? findItem(items, parentId);
 
-		nodes[id] = { id, children };
+		nodes[id] = { id, noteName, children };
 		parent.children.push(item);
 	}
 
@@ -139,6 +142,64 @@ export function removeItem(items: TreeItems, id: UniqueIdentifier) {
 
 		newItems.push(item);
 	}
+
+	return newItems;
+}
+
+// change note name
+export function changeItemName(items: TreeItems, id: UniqueIdentifier, name: string) {
+	const newItems = [];
+	for(const item of items) {
+		let nameChanged = false;
+		if(item.id === id) {
+			item.noteName = name;
+			nameChanged = true;
+		}
+		
+		if(!nameChanged && item.children.length) {
+			item.children = changeItemName(item.children, id, name);
+		}
+
+		newItems.push(item);
+	}
+
+	return newItems;
+}
+
+// adding sub note
+export function addNewNote(items: TreeItems, parentId: UniqueIdentifier | null, setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>) {
+	let newItems = [];
+	let idForNewNote = nanoid();
+	if (parentId !== null) {
+		for (const item of items) {
+			let added = false;
+			if (item.id === parentId) {
+				item.children.push({
+					id: idForNewNote,
+					noteName: "",
+					children: [],
+				});
+				item.collapsed = false;
+				added = true;
+			}
+
+			if (!added && item.children.length) {
+				item.children = addNewNote(item.children, parentId, setSelectedNote);
+			}
+
+			newItems.push(item);
+		}
+	} else {
+		items.push({
+			id: idForNewNote,
+			noteName: "",
+			children: [],
+		});
+
+		newItems = [...items];
+	}
+
+	setSelectedNote(`regularNote,${idForNewNote},`)
 
 	return newItems;
 }

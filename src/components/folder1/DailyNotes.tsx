@@ -3,10 +3,10 @@ import { OnArgs } from "react-calendar/dist/cjs/shared/types";
 import { useState, useEffect } from "react";
 import { returnDateID } from "../../utils/functions1";
 import { Dispatch, SetStateAction } from "react";
-import { NoteIDwithNoteType } from "./App";
+import { NoteIDandTitlewithNoteType } from "./App";
 
 type Props = {
-	setSelectedNote: Dispatch<SetStateAction<NoteIDwithNoteType>>;
+	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
 };
 
 export function DailyNotes({ setSelectedNote }: Props) {
@@ -18,7 +18,7 @@ export function DailyNotes({ setSelectedNote }: Props) {
 	};
 
 	useEffect(() => {
-		setSelectedNote(("dailyNote," + returnDateID(selectedDate)) as NoteIDwithNoteType);
+		setSelectedNote(("dailyNote," + returnDateID(selectedDate)) as NoteIDandTitlewithNoteType);
 	}, [selectedDate]);
 
 	const goToToday = () => {
