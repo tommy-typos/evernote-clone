@@ -1,5 +1,6 @@
 import { TreeItems } from "@/components/DndKitSortable/Tree/types";
 import { noteType } from "@/components/folder1/App";
+import { UniqueIdentifier } from "@dnd-kit/core";
 import { MutableRefObject } from "react";
 
 export const isToday = (someDate: Date) => {
@@ -32,15 +33,20 @@ export const saveNoteToLocalStorage = (noteContent: string, noteID: string, note
 	}
 };
 
+export const deleteNotesFromLocalStorage = (noteIds: UniqueIdentifier[]) => {
+	const userData = JSON.parse(window.localStorage.getItem("userRegularNotes")!) || {};
+	const updatedDB = Object.fromEntries(Object.entries(userData).filter(([key]) => !noteIds.includes(key)));
+	window.localStorage.setItem("userRegularNotes", JSON.stringify(updatedDB));
+};
+
 export const returnDateID = (date: Date) => {
 	return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 };
 
 export const saveNoteTreeToLocalStorage = (noteTree: TreeItems) => {
 	window.localStorage.setItem("regularNotesTree", JSON.stringify(noteTree));
-}
+};
 
 export const getNoteTree = () => {
-	return JSON.parse(window.localStorage.getItem("regularNotesTree")!) || [] as TreeItems;
-	
-}
+	return JSON.parse(window.localStorage.getItem("regularNotesTree")!) || ([] as TreeItems);
+};

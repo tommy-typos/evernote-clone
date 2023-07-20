@@ -6,15 +6,18 @@ import { TreeItems } from "../DndKitSortable/Tree/types";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { changeItemName } from "../DndKitSortable/Tree/utilities";
 import { initialItems2 } from "@/utils/sampleNoteTree";
+import { DenemeZustand } from "../DenemeZustand";
+
+
+export type NoteIDandTitlewithNoteType = `${noteType},${string},${string}` | undefined;
 
 export type noteType = "dailyNote" | "regularNote";
-export type NoteIDandTitlewithNoteType = `${noteType},${string},${string}` | undefined;
+
+
 
 export default function App() {
 	const [selectedNote, setSelectedNote] = useState<NoteIDandTitlewithNoteType>();
 	const [items, setItems] = useState<TreeItems>([]);
-
-	// console.log(items.filter(item => item.isFavorite === true));
 
 	useEffect(() => {
 		const noteTree = getNoteTree();
@@ -40,6 +43,7 @@ export default function App() {
 					<p>Please choose a note to start writing</p>
 				</div>
 			)}
+			{/* <DenemeZustand /> */}
 		</div>
 	);
 }

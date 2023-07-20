@@ -8,7 +8,6 @@ import { NoteIDandTitlewithNoteType } from "./folder1/App";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getNoteTree } from "@/utils/functions1";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import Deneme from "./Deneme";
 
 const SortableTreeClient = dynamic(() => Promise.resolve(SortableTree), {
 	ssr: false,
@@ -22,11 +21,6 @@ type Props = {
 };
 
 export function Notebooks({ selectedNote, setSelectedNote, items, setItems }: Props) {
-	// const [noteTreeItems, setNoteTreeItems] = useState<TreeItems>([]);
-
-	// useEffect(() => {
-	// 	setNoteTreeItems(getNoteTree());
-	// }, []);
 	return (
 		<div className={`h-full overflow-y-auto p-2  `}>
 			<p className="text-slate-300 mb-1">Notes</p>
@@ -36,12 +30,10 @@ export function Notebooks({ selectedNote, setSelectedNote, items, setItems }: Pr
 				collapsible
 				removable
 				selectedNote={selectedNote}
-				// defaultItems={noteTreeItems}
 				setSelectedNote={setSelectedNote}
 			/>
 			{/* <Pages layout={Layout.Vertical} /> */}
 			{/* <SimpleDnd /> */}
-			{/* <Deneme /> */}
 		</div>
 	);
 }
