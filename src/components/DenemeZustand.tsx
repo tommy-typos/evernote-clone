@@ -41,6 +41,7 @@ const useTodoStore = create<TodoStore>()(
 					setTimeout(() => {
 						useCountStore.setState((state) => ({ count: state.count + num }));
 					}, 0);
+					console.log('added todo')
 					return { todos: true ? [...state.todos, { text: text }] : state.todos };
 				}),
 			// getCount: () => get(state => {return state}),

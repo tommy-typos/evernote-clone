@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
 	DndContext,
@@ -19,25 +19,13 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-import {
-	buildTree,
-	flattenTree,
-	getProjection,
-	removeItem,
-	removeChildrenOf,
-	addNewNote,
-	setProperty,
-} from "./utilities";
+import { buildTree, flattenTree, getProjection, removeChildrenOf } from "./utilities";
 import type { FlattenedItem, TreeItems } from "./types";
 import { SortableTreeItem } from "./TreeItem";
 import { CSS } from "@dnd-kit/utilities";
-import { initialItems } from "@/utils/sampleNoteTree";
 
-// import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
-import { Dispatch, SetStateAction } from "react";
-import { getNoteTree, saveNoteTreeToLocalStorage } from "@/utils/functions1";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import { useSelectedNoteStore } from "@/state/selectedNote";
+import { useRegularNoteStore } from "@/state/regularNotes";
 
 const measuring = {
 	droppable: {
@@ -70,13 +58,8 @@ const dropAnimationConfig: DropAnimation = {
 
 interface Props {
 	collapsible?: boolean;
-	// defaultItems?: TreeItems;
 	indentationWidth?: number;
 	removable?: boolean;
-	// selectedNote: NoteIDandTitlewithNoteType;
-	// setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
-	items: TreeItems;
-	setItems: React.Dispatch<React.SetStateAction<TreeItems>>;
 }
 
 const customPointerSensorOptions: PointerSensorOptions = {
@@ -86,19 +69,14 @@ const customPointerSensorOptions: PointerSensorOptions = {
 	},
 };
 
-export function SortableTree({
-	collapsible,
-	// defaultItems = initialItems,
-	indentationWidth = 50,
-	removable,
-	// selectedNote,
-	// setSelectedNote,
-	items,
-	setItems,
-}: Props) {
-	// const [items, setItems] = useState<TreeItems>(() => getNoteTree());
-	const selectedNote = useSelectedNoteStore(state => state.selectedNote);
-	const setSelectedNote = useSelectedNoteStore(state => state.setSelectedNote)
+export function SortableTree({ collapsible, indentationWidth = 50, removable }: Props) {
+	const items = useRegularNoteStore((state) => state.regularNotes);
+	const setItems = useRegularNoteStore((state) => state.setRegularNotes);
+
+	const removeNote = useRegularNoteStore((state) => state.removeNote);
+	const addNote = useRegularNoteStore((state) => state.addNote);
+	const toggleProperty = useRegularNoteStore((state) => state.toggleProperty);
+
 	const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 	const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
 	const [offsetLeft, setOffsetLeft] = useState(0);
@@ -121,12 +99,6 @@ export function SortableTree({
 	const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [flattenedItems]);
 	const activeItem = activeId ? flattenedItems.find(({ id }) => id === activeId) : null;
 
-	// console.log(JSON.stringify(items, null, 2));
-
-	useEffect(() => {
-		saveNoteTreeToLocalStorage(items);
-	}, [items]);
-
 	return (
 		<>
 			<DndContext
@@ -140,7 +112,7 @@ export function SortableTree({
 				onDragCancel={handleDragCancel}
 			>
 				<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-					{flattenedItems.map(({ id, children, collapsed, depth, noteName, isFavorite }) => (
+					{flattenedItems.map(({ id, children, collapsed, depth, title: noteName, isFavorite }) => (
 						<SortableTreeItem
 							key={id}
 							id={id}
@@ -150,12 +122,14 @@ export function SortableTree({
 							depth={id === activeId && projected ? projected.depth : depth}
 							indentationWidth={indentationWidth}
 							collapsed={Boolean(collapsed && children.length)}
-							onCollapse={collapsible && children.length ? () => handleCollapse(id) : undefined}
-							onRemove={removable ? () => handleRemove(id) : undefined}
-							onAddChild={() => handleAddChild(id)}
-							// selectedNote={selectedNote}
-							// setSelectedNote={setSelectedNote}
-							onMakeFavorite={() => handleMakeFavorite(id)}
+							onCollapse={
+								collapsible && children.length
+									? () => toggleProperty({ id: id, property: "collapsed" })
+									: undefined
+							}
+							onRemove={removable ? () => removeNote(id) : undefined}
+							onAddChild={() => addNote(id)}
+							onMakeFavorite={() => toggleProperty({ id: id, property: "isFavorite" })}
 						/>
 					))}
 					{createPortal(
@@ -165,10 +139,8 @@ export function SortableTree({
 									id={activeId}
 									depth={activeItem.depth}
 									clone
-									// value={activeId.toString()}
-									noteName={activeItem.noteName ? activeItem.noteName : "Untitled"}
+									noteName={activeItem.title ? activeItem.title : "Untitled"}
 									indentationWidth={indentationWidth}
-									// setSelectedNote={null}
 								/>
 							) : null}
 						</DragOverlay>,
@@ -176,7 +148,7 @@ export function SortableTree({
 					)}
 				</SortableContext>
 			</DndContext>
-			<button className="flex w-full  items-center text-slate-50" onClick={() => handleAddTopLevelNote()}>
+			<button className="flex w-full  items-center text-slate-50" onClick={() => addNote(null)}>
 				<PlusIcon className="mr-1 h-5 w-5" />
 				Add a note
 			</button>
@@ -227,33 +199,5 @@ export function SortableTree({
 		setOffsetLeft(0);
 
 		document.body.style.setProperty("cursor", "");
-	}
-
-	function handleRemove(id: UniqueIdentifier) {
-		setItems((items) => removeItem(items, id, selectedNote, setSelectedNote));
-	}
-
-	function handleAddChild(id: UniqueIdentifier) {
-		setItems((items) => addNewNote(items, id, setSelectedNote));
-	}
-
-	function handleAddTopLevelNote() {
-		setItems((items) => addNewNote(items, null, setSelectedNote));
-	}
-
-	function handleCollapse(id: UniqueIdentifier) {
-		setItems((items) =>
-			setProperty(items, id, "collapsed", (value) => {
-				return !value;
-			})
-		);
-	}
-
-	function handleMakeFavorite(id: UniqueIdentifier) {
-		setItems((items) =>
-			setProperty(items, id, "isFavorite", (value) => {
-				return !value;
-			})
-		);
 	}
 }

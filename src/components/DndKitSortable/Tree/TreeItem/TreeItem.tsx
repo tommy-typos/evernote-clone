@@ -4,8 +4,6 @@ import classNames from "classnames";
 import { Action } from "./Action";
 import styles from "./TreeItem.module.css";
 import { UniqueIdentifier } from "@dnd-kit/core";
-// import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
-import { Dispatch, SetStateAction } from "react";
 import { twColors } from "@/utils/colors/twTheme";
 import {
 	ChevronRightIcon,
@@ -13,15 +11,9 @@ import {
 	LinkIcon,
 	PencilSquareIcon,
 	PlusIcon,
-	StarIcon,
 	TrashIcon,
-	XMarkIcon,
 } from "@heroicons/react/20/solid";
 
-/**
- *
- *
- */
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import { useRef, useState } from "react";
 import { ControlledMenu, useClick } from "@szhsin/react-menu";
@@ -46,8 +38,6 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
 	wrapperRef?(node: HTMLLIElement): void;
 	onMakeFavorite?(): void;
 	isOver?: boolean;
-	// selectedNote?: NoteIDandTitlewithNoteType;
-	// setSelectedNote?: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
 }
 
 export const TreeItem = forwardRef<HTMLDivElement, Props>(
@@ -71,14 +61,12 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 			noteId,
 			wrapperRef,
 			isOver,
-			// selectedNote,
-			// setSelectedNote,
 			...props
 		},
 		ref
 	) => {
-		const selectedNote = useSelectedNoteStore(state => state.selectedNote)
-		const setSelectedNote = useSelectedNoteStore(state => state.setSelectedNote)
+		const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
+		const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
 		const [isContextOpen, setIsContextOpen] = useState(false);
 		const [contextAnchorPoint, setContextAnchorPoint] = useState({ x: 0, y: 0 });
 
@@ -128,8 +116,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 							)}
 							onClick={() => {
 								if (setSelectedNote) {
-									// setSelectedNote(`regularNote,${noteId},${noteName}`);
-									setSelectedNote({type: "regularNote", id: noteId as NoteId, title: noteName});
+									setSelectedNote({ type: "regularNote", id: noteId as NoteId, title: noteName });
 								}
 							}}
 							style={{
@@ -142,11 +129,6 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 						>
 							{noteName ? noteName : "Untitled"}
 						</span>
-						{/* {!clone && onRemove && (
-							<Action onClick={onRemove} className="invisible px-1 group-hover:visible">
-								<XMarkIcon className="h-5 w-5 hover:fill-slate-400" />
-							</Action>
-						)} */}
 						{!clone && (
 							<Action
 								onClick={(e) => {

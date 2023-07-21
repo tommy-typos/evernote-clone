@@ -14,10 +14,10 @@ import { getFontColorsDarkMode, getHighlightColorsDarkMode, ColorHex } from "@/u
 import { useEditor, EditorContent, Extension } from "@tiptap/react";
 import { Editor } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
-// import { NoteIDandTitlewithNoteType, noteType } from "./App";
 import { debounce, isToday, saveNoteToLocalStorage } from "@/utils/functions1";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { NoteId, NoteType, useSelectedNoteStore } from "@/state/selectedNote";
+import { useRegularNoteStore } from "@/state/regularNotes";
 
 const TabKeepsFocusExtension = Extension.create({
 	name: "tabKeepsFocus",
@@ -38,15 +38,9 @@ export function generateAuto() {
 
 const formatOptions: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
 
-type Props = {
-	// selectedNote: NoteIDandTitlewithNoteType;
-	changeNoteTitle(noteId: UniqueIdentifier, title: string): void;
-};
-
-const Tiptap = ({
-	//  selectedNote,
-	 changeNoteTitle }: Props) => {
-		const selectedNote = useSelectedNoteStore(state => state.selectedNote);
+const Tiptap = () => {
+	const updateNoteTitle = useRegularNoteStore((state) => state.updateNoteTitle);
+	const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
 
 	const [headingLevel, setHeadingLevel] = useState<string>("");
 	const [fontColor, setFontColor] = useState<ColorHexOrAuto>(generateAuto() as ColorHexOrAuto);
@@ -67,7 +61,7 @@ const Tiptap = ({
 	useEffect(() => {
 		ifDailyThenIsToday.current = false;
 		if (selectedNote) {
-			noteType.current = selectedNote.type
+			noteType.current = selectedNote.type;
 			noteID.current = selectedNote.id;
 
 			if (noteType.current === "dailyNote") {
@@ -75,11 +69,12 @@ const Tiptap = ({
 				noteContent.current = userDailyNoteData[noteID.current] ?? "";
 
 				let temp = noteID.current.toString().split("-");
-				noteTitle.current = "📅 " + new Date(
-					parseInt(temp[0]),
-					parseInt(temp[1]) - 1,
-					parseInt(temp[2])
-				).toLocaleDateString("en-US", formatOptions);
+				noteTitle.current =
+					"📅 " +
+					new Date(parseInt(temp[0]), parseInt(temp[1]) - 1, parseInt(temp[2])).toLocaleDateString(
+						"en-US",
+						formatOptions
+					);
 
 				ifDailyThenIsToday.current = isToday(
 					new Date(parseInt(temp[0]), parseInt(temp[1]) - 1, parseInt(temp[2]))
@@ -88,33 +83,18 @@ const Tiptap = ({
 				const userRegularNoteData = JSON.parse(window.localStorage.getItem("userRegularNotes")!) || {};
 				noteContent.current = userRegularNoteData[noteID.current] ?? "";
 
-				// noteTitle.current = "note title";
-				noteTitle.current = selectedNote.title
-				//  ? selectedNote.split(",")[2] : "Untitled";
+				noteTitle.current = selectedNote.title;
 			}
 
 			setTitleValue(noteTitle.current);
 		}
 	}, [selectedNote]);
 
-	useEffect(() => {
-		debounce(
-			() => {
-				changeNoteTitle(noteID.current as UniqueIdentifier, titleValue);
-			},
-			300,
-			timeoutRefforTitle as any
-		)();
-	}, [titleValue]);
-
-	//TODO: even selection changes cause this componenet re-render every time.
 	const editor = useEditor(
 		{
 			extensions: [
 				TiptapReactNode,
 				TabKeepsFocusExtension,
-				// TODO: add a new line paragraph after horizontal rule
-				// TODO: make headings bold as default so that we can toggle bold on and off
 				StarterKit.configure({
 					heading: {
 						levels: [1, 2, 3],
@@ -159,7 +139,6 @@ const Tiptap = ({
 					setSelectionHasColor(false);
 				}
 				stuffTodo(editor);
-				// console.log(editor.getHTML());
 			},
 
 			onFocus({ editor, event }) {
@@ -207,6 +186,19 @@ const Tiptap = ({
 		}
 	}
 
+	function handleTitleValueChange(e: React.ChangeEvent<HTMLInputElement>) {
+		setTitleValue(() => {
+			debounce(
+				() => {
+					updateNoteTitle({ id: noteID.current as UniqueIdentifier, title: e.target.value });
+				},
+				300,
+				timeoutRefforTitle as any
+			)();
+			return e.target.value;
+		});
+	}
+
 	return (
 		<div className="flex h-full flex-grow flex-col">
 			<ToolbarComponent
@@ -225,7 +217,7 @@ const Tiptap = ({
 				} bg-slate-900 pl-12 pt-6 text-4xl outline-none `}
 				value={titleValue}
 				placeholder="Untitled"
-				onChange={(e) => setTitleValue(e.target.value)}
+				onChange={handleTitleValueChange}
 			></input>
 
 			<EditorContent editor={editor} className="flex-grow bg-slate-900" />

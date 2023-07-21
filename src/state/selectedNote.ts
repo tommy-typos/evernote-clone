@@ -1,7 +1,6 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { create } from "zustand";
 import { RegularNote, RegularNotes, useRegularNoteStore } from "./regularNotes";
-import { Item } from "@radix-ui/react-select";
 
 export type NoteType = "dailyNote" | "regularNote";
 export type NoteId = UniqueIdentifier | `${string}-${string}-${string}`;
@@ -44,8 +43,6 @@ export const useSelectedNoteStore = create<SelectedNoteStore>()((set) => ({
 			let selectedNote: SelectedNote | null = null;
 			if (state.latestSelectedRegularNoteId) {
 				const regularNotes = useRegularNoteStore.getState().regularNotes;
-				// const setRegularNotes = useRegularNoteStore.getState().setRegularNotes;
-				// setRegularNotes([]);
 				const note = findRegularNoteWithId(regularNotes, state.latestSelectedRegularNoteId);
 				if (note) {
 					selectedNote = {

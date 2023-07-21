@@ -32,13 +32,11 @@ type RegularNoteStore = {
 	toggleProperty: (argList: { id: UniqueIdentifier; property: Toggleable }) => void;
 	setRegularNotes: (notes: RegularNotes) => void;
 	setFavoriteNotes: (notes: FavoriteRegularNotes) => void;
-	// findRegularNoteWithId: (id: UniqueIdentifier) => RegularNote;
 };
 
 export const useRegularNoteStore = create<RegularNoteStore>()(
 	persist(
 		(set) => ({
-			// TODO: ask why "as" was important to get rid of errors
 			regularNotes: [] as RegularNotes,
 			favoriteNotes: [] as FavoriteRegularNotes,
 			addNote: (parentId) =>
@@ -46,11 +44,10 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 					const { newNotes, idForNewNote } = addNoteFunction(state.regularNotes, parentId);
 
 					// set selected note to new note
-					// const setSelectedNode = useSelectedNoteStore((state) => state.setSelectedNote);
 					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
-					Promise.resolve().then(() => {
+					// Promise.resolve().then(() => {
 						setSelectedNote({ type: "regularNote", id: idForNewNote, title: "" });
-					});
+					// });
 					return { regularNotes: newNotes };
 				}),
 			removeNote: (id) =>
@@ -67,8 +64,6 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 					}
 
 					// update selected note
-					// const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
-					// const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
 					const selectedNote = useSelectedNoteStore.getState().selectedNote;
 					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
 					if (selectedNote && allRemovedNoteIds.includes(selectedNote?.id)) {
@@ -102,8 +97,6 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 					});
 
 					//update in selected note
-					// const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
-					// const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
 					const selectedNote = useSelectedNoteStore.getState().selectedNote;
 					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
 					if (selectedNote && selectedNote.id === id) {
@@ -139,10 +132,6 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 						favoriteNotes: notes,
 					};
 				}),
-			// findRegularNoteWithId: (id) => {
-			// 	const foundItem = useRegularNoteStore.getState().regularNotes.find(note => note.id === id) as RegularNote;
-			// 	return foundItem;
-			// },
 		}),
 		{
 			name: "regular-notes-tree",
@@ -151,35 +140,3 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 		}
 	)
 );
-
-/**
- * add new note
- * 		done = should set it to selected note + latestselected note
- */
-
-/**
- * removeNote
- * 		done = remove note with given id
- * 		done = if it was fav, then remove it from favs too
- * 		done = recursively loop through children and check if any of them were favorite, remove them from favs too
- * 		done = if it was selectednote, set selected note to null
- * 		done = if it was latest selectednote, set latest selected note to null
- * 		done = recursively loop through children and check if any of them were selectedNote, if so set selected to null
- * 		done = delete notecontent fromd database
- */
-
-/**
- * updateNoteTitle
- * 		done = update title in regular notes
- * 		done = if it was fav, update in favs too
- * 		done = if it was selectednote, update there too
- * 		done = if it was latest selected note, update there too
- */
-
-/**
- * toggleFavorite
- * 		done = remove it from favorites
- *
- */
-
-// favorites could be derived but it will cause favs to rerender every time we do unrelated activities as well.
