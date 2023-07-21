@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { create } from "zustand";
-import dynamic from "next/dynamic";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 type Todo = {
@@ -10,7 +9,6 @@ type Todo = {
 type TodoStore = {
 	todos: Todo[];
 	addTodo: (text: string) => void;
-	// getCount: () => number;
 };
 
 function AddTodo() {
@@ -41,10 +39,9 @@ const useTodoStore = create<TodoStore>()(
 					setTimeout(() => {
 						useCountStore.setState((state) => ({ count: state.count + num }));
 					}, 0);
-					console.log('added todo')
+					console.log("added todo");
 					return { todos: true ? [...state.todos, { text: text }] : state.todos };
 				}),
-			// getCount: () => get(state => {return state}),
 		}),
 		{
 			name: "zustand-todos-storage",
@@ -76,7 +73,6 @@ export function DenemeZustand() {
 
 function RenderedTodos() {
 	let todos = useTodoStore((state) => state.todos);
-	// console.log(todos);
 
 	useEffect(() => {
 		useTodoStore.persist.rehydrate();
@@ -95,11 +91,7 @@ function RenderedTodos() {
 }
 
 function Count() {
-	// Promise.resolve().then(() => console.log('resolved'))
-	// console.log('sync')
-
 	const count = useCountStore((state) => state.count);
-	// console.log("count");
 	return <p>Hello {count}</p>;
 }
 
@@ -109,18 +101,3 @@ const array2 = [3, 6, 9];
 const existsInArray2 = array1.some((value) => array2.includes(value));
 
 console.log(existsInArray2);
-
-
-// const myObject = {
-// 	key1: "value1",
-// 	key2: "value2",
-// 	key3: "value3",
-// };
-
-// const keysToDelete = ["key1", "key3"];
-
-// // Creating a new object without the specified keys
-// const updatedObject = Object.fromEntries(Object.entries(myObject).filter(([key]) => !keysToDelete.includes(key)));
-
-// console.log(updatedObject);
-// // Output: { key2: 'value2' }

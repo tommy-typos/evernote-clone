@@ -6,6 +6,7 @@ import {
 	useSensor,
 	useSensors,
 	PointerSensor,
+	PointerSensorOptions,
 	useDndContext,
 	MeasuringStrategy,
 	DropAnimation,
@@ -19,6 +20,7 @@ import { Page, Layout, Position } from "./Page";
 import type { Props as PageProps } from "./Page";
 import styles from "./Pages.module.css";
 import pageStyles from "./Page.module.css";
+import { FavoriteRegularNote, useRegularNoteStore } from "@/state/regularNotes";
 
 interface Props {
 	layout: Layout;
@@ -51,36 +53,65 @@ const dropAnimation: DropAnimation = {
 	}),
 };
 
+const customPointerSensorOptions: PointerSensorOptions = {
+	activationConstraint: {
+		delay: 150,
+		tolerance: 0,
+	},
+};
+
 export function Pages({ layout }: Props) {
-	const [items, setItems] = useState<UniqueIdentifier[]>(["1", "2", "3"]);
+	const items = useRegularNoteStore((state) => state.favoriteNotes);
+	const setItems = useRegularNoteStore((state) => state.setFavoriteNotes);
 	const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-	const activeIndex = activeId ? items.indexOf(activeId) : -1;
-	const sensors = useSensors(useSensor(PointerSensor));
+	const [titleOfActive, setTitleOfActive] = useState("");
+	const activeIndex = activeId ? items.findIndex((item) => item.id === activeId) : -1;
+	const sensors = useSensors(useSensor(PointerSensor, customPointerSensorOptions));
 
 	return (
-		<DndContext
-			onDragStart={handleDragStart}
-			onDragEnd={handleDragEnd}
-			onDragCancel={handleDragCancel}
-			sensors={sensors}
-			collisionDetection={closestCenter}
-			measuring={measuring}
-		>
-			<SortableContext items={items}>
-				<ul className={classNames(styles.Pages, styles[layout])}>
-					{items.map((id, index) => (
-						<SortablePage id={id} index={index + 1} key={id} layout={layout} activeIndex={activeIndex} />
-					))}
-				</ul>
-			</SortableContext>
-			<DragOverlay dropAnimation={dropAnimation}>
-				{activeId ? <PageOverlay id={activeId} layout={layout} items={items} /> : null}
-			</DragOverlay>
-		</DndContext>
+		<>
+			{items.length > 0 ? (
+				<>
+					<p className="mb-1 text-slate-300">Favorites</p>
+					<DndContext
+						onDragStart={handleDragStart}
+						onDragEnd={handleDragEnd}
+						onDragCancel={handleDragCancel}
+						sensors={sensors}
+						collisionDetection={closestCenter}
+						measuring={measuring}
+					>
+						<SortableContext items={items}>
+							<ul className={classNames(styles.Pages, styles[layout])}>
+								{items.map(({ id, title }, index) => (
+									<SortablePage
+										id={id}
+										index={index + 1}
+										title={title}
+										key={id}
+										layout={layout}
+										activeIndex={activeIndex}
+									/>
+								))}
+							</ul>
+						</SortableContext>
+						<DragOverlay dropAnimation={dropAnimation}>
+							{activeId ? (
+								<PageOverlay id={activeId} title={titleOfActive} layout={layout} items={items} />
+							) : null}
+						</DragOverlay>
+					</DndContext>
+				</>
+			) : (
+				<></>
+			)}
+		</>
 	);
 
 	function handleDragStart({ active }: DragStartEvent) {
 		setActiveId(active.id);
+		let title = items.find((item) => item.id === active.id)?.title as string;
+		setTitleOfActive(title);
 	}
 
 	function handleDragCancel() {
@@ -89,12 +120,12 @@ export function Pages({ layout }: Props) {
 
 	function handleDragEnd({ over }: DragEndEvent) {
 		if (over) {
-			const overIndex = items.indexOf(over.id);
+			const overIndex = items.findIndex((item) => item.id === over.id);
 
 			if (activeIndex !== overIndex) {
 				const newIndex = overIndex;
 
-				setItems((items) => arrayMove(items, activeIndex, newIndex));
+				setItems(arrayMove(items, activeIndex, newIndex));
 			}
 		}
 
@@ -102,11 +133,11 @@ export function Pages({ layout }: Props) {
 	}
 }
 
-function PageOverlay({ id, items, ...props }: Omit<PageProps, "index"> & { items: UniqueIdentifier[] }) {
+function PageOverlay({ id, items, ...props }: Omit<PageProps, "index"> & { items: FavoriteRegularNote[] }) {
 	const { activatorEvent, over } = useDndContext();
 	const isKeyboardSorting = isKeyboardEvent(activatorEvent);
-	const activeIndex = items.indexOf(id);
-	const overIndex = over?.id ? items.indexOf(over?.id) : -1;
+	const activeIndex = items.findIndex((item) => item.id === id);
+	const overIndex = over?.id ? items.findIndex((item) => item.id === over?.id) : -1;
 
 	return (
 		<Page
@@ -124,7 +155,7 @@ function PageOverlay({ id, items, ...props }: Omit<PageProps, "index"> & { items
 	);
 }
 
-function SortablePage({ id, activeIndex, ...props }: PageProps & { activeIndex: number }) {
+function SortablePage({ id, activeIndex, title, ...props }: PageProps & { activeIndex: number }) {
 	const { attributes, listeners, index, isDragging, isSorting, over, setNodeRef, transform, transition } =
 		useSortable({
 			id,
@@ -135,6 +166,7 @@ function SortablePage({ id, activeIndex, ...props }: PageProps & { activeIndex: 
 		<Page
 			ref={setNodeRef}
 			id={id}
+			title={title}
 			active={isDragging}
 			style={{
 				transition,

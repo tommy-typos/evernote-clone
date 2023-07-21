@@ -3,10 +3,7 @@ import { UserCog2 } from "lucide-react";
 import { useState } from "react";
 import { Notebooks } from "../Notebooks";
 import { DailyNotes } from "./DailyNotes";
-import { Dispatch, SetStateAction } from "react";
 import { twSpacing } from "@/utils/colors/twTheme";
-import { TreeItems } from "../DndKitSortable/Tree/types";
-import { useSelectedNoteStore } from "@/state/selectedNote";
 
 type TabType = "settings" | "notebooks" | "dailyNotes";
 

@@ -39,7 +39,7 @@ export function addNoteFunction(notes: RegularNotes, parentId: UniqueIdentifier 
 
 export function removeNoteFunction(notes: RegularNotes, id: UniqueIdentifier) {
 	const newNotes = [];
-	const allRemovedNoteIds: UniqueIdentifier[] = [];
+	let allRemovedNoteIds: UniqueIdentifier[] = [];
 
 	for (const item of notes) {
 		if (item.id === id) {
@@ -48,13 +48,14 @@ export function removeNoteFunction(notes: RegularNotes, id: UniqueIdentifier) {
 				const childrenIds = getIdsOfChildren(item.children);
 				allRemovedNoteIds.push(...childrenIds);
 			}
-			continue;
+			break;
 		}
 
 		if (item.children.length) {
-			item.children = removeNoteFunction(item.children, id).newNotes;
+			const returnsFromRecursive = removeNoteFunction(item.children, id);
+			item.children = returnsFromRecursive.newNotes;
+			allRemovedNoteIds = returnsFromRecursive.allRemovedNoteIds;
 		}
-
 		newNotes.push(item);
 	}
 
@@ -99,17 +100,28 @@ export function updateNoteTitleFunction(notes: RegularNotes, id: UniqueIdentifie
 	return newNotes;
 }
 
-export function togglePropertyFunction(notes: RegularNotes, id: UniqueIdentifier, property: Toggleable) {
+export function togglePropertyFunction(
+	notes: RegularNotes,
+	id: UniqueIdentifier,
+	property: Toggleable
+): { newNotes: RegularNotes; becameFavAfterToggle: boolean; title: string } {
+	let becameFavAfterToggle = false;
+	let title = "";
 	for (const item of notes) {
 		if (item.id === id) {
-			item[property] = !item[property];
+			becameFavAfterToggle = !item[property];
+			item[property] = becameFavAfterToggle;
+			title = item.title;
 			continue;
 		}
 
 		if (item.children.length) {
-			item.children = togglePropertyFunction(item.children, id, property);
+			const returnValueFromRecursive = togglePropertyFunction(item.children, id, property);
+			item.children = returnValueFromRecursive.newNotes;
+			becameFavAfterToggle = returnValueFromRecursive.becameFavAfterToggle;
+			title = returnValueFromRecursive.title;
 		}
 	}
 
-	return [...notes];
+	return { newNotes: [...notes], becameFavAfterToggle: becameFavAfterToggle, title: title };
 }

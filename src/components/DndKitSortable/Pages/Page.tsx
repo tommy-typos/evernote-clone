@@ -3,6 +3,7 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import classNames from "classnames";
 
 import styles from "./Page.module.css";
+import { useSelectedNoteStore } from "@/state/selectedNote";
 
 export enum Position {
 	Before = -1,
@@ -20,14 +21,18 @@ export interface Props extends Omit<HTMLAttributes<HTMLButtonElement>, "id"> {
 	clone?: boolean;
 	insertPosition?: Position;
 	id: UniqueIdentifier;
+	title: string;
 	index?: number;
 	layout: Layout;
 }
 
 export const Page = forwardRef<HTMLLIElement, Props>(function Page(
-	{ id, index, active, clone, insertPosition, layout, style, ...props },
+	{ id, title, index, active, clone, insertPosition, layout, style, ...props },
 	ref
 ) {
+	const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
+	const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
+
 	return (
 		<li
 			className={classNames(
@@ -40,11 +45,19 @@ export const Page = forwardRef<HTMLLIElement, Props>(function Page(
 			)}
 			style={style}
 			ref={ref}
+			onClick={() => setSelectedNote({ id: id, type: "regularNote", title: title })}
 		>
-			<button className={classNames(styles.Page, "bg-slate-700  text-white")} data-id={id.toString()} {...props}>
-				{id}
+			<button
+				className={classNames(
+					styles.Page,
+					"pl-4 text-left text-white",
+					selectedNote?.id === id && "bg-slate-700"
+				)}
+				data-id={id.toString()}
+				{...props}
+			>
+				{title ? title : "Undefined"}
 			</button>
 		</li>
 	);
 });
-

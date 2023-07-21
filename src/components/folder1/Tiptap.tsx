@@ -141,7 +141,7 @@ const Tiptap = () => {
 				stuffTodo(editor);
 			},
 
-			onFocus({ editor, event }) {
+			onFocus({ editor }) {
 				stuffTodo(editor);
 			},
 			// content: `<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3><p>Normal text</p><p><strong>bold text    </strong><em>italic text   </em><u>underline</u>    <s>strikethrough</s></p><ul><li><p>bullet</p></li></ul><ol><li><p>order</p></li></ol><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p></div></li></ul><ul><li><p>bullet</p><ol><li><p>order</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>check</p><ul><li><p>fdlsjfls</p><ul data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>sdfkldsf</p><ol><li><p>dslfjsdlfk</p></li></ol></div></li></ul></li></ul></div></li></ul></li></ol></li></ul><blockquote><p>quote</p><p>quote </p></blockquote><hr><p><strong><em><s><u>bold italic underline strike</u></s></em></strong>    <strong><em><u>bold italic underline</u></em></strong>     <strong><em>bold italic</em></strong></p><p><code>inline code</code> </p><pre><code>console.log('hello, friend')</code></pre><p>hello</p>`,

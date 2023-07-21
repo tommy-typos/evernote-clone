@@ -2,9 +2,6 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
 import type { FlattenedItem, TreeItem, TreeItems } from "./types";
-import { nanoid } from "nanoid";
-import { Dispatch, SetStateAction } from "react";
-import { SelectedNote, useSelectedNoteStore } from "@/state/selectedNote";
 
 function getDragDepth(offset: number, indentationWidth: number) {
 	return Math.round(offset / indentationWidth);

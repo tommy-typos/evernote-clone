@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
 	DndContext,
@@ -20,12 +20,13 @@ import {
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import { buildTree, flattenTree, getProjection, removeChildrenOf } from "./utilities";
-import type { FlattenedItem, TreeItems } from "./types";
+import type { FlattenedItem } from "./types";
 import { SortableTreeItem } from "./TreeItem";
 import { CSS } from "@dnd-kit/utilities";
 
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { useRegularNoteStore } from "@/state/regularNotes";
+import { DenemeResetTree } from "./DenemeResetTree";
 
 const measuring = {
 	droppable: {
@@ -72,7 +73,6 @@ const customPointerSensorOptions: PointerSensorOptions = {
 export function SortableTree({ collapsible, indentationWidth = 50, removable }: Props) {
 	const items = useRegularNoteStore((state) => state.regularNotes);
 	const setItems = useRegularNoteStore((state) => state.setRegularNotes);
-
 	const removeNote = useRegularNoteStore((state) => state.removeNote);
 	const addNote = useRegularNoteStore((state) => state.addNote);
 	const toggleProperty = useRegularNoteStore((state) => state.toggleProperty);
@@ -152,6 +152,7 @@ export function SortableTree({ collapsible, indentationWidth = 50, removable }: 
 				<PlusIcon className="mr-1 h-5 w-5" />
 				Add a note
 			</button>
+			{/* <DenemeResetTree /> */}
 		</>
 	);
 

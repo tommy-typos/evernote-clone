@@ -2,7 +2,6 @@ import Calendar from "react-calendar";
 import { OnArgs } from "react-calendar/dist/cjs/shared/types";
 import { useState, useEffect } from "react";
 import { returnDateID } from "../../utils/functions1";
-import { Dispatch, SetStateAction } from "react";
 import { useSelectedNoteStore } from "@/state/selectedNote";
 
 export function DailyNotes() {

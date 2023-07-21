@@ -15,7 +15,7 @@ export type RegularNote = {
 
 export type Toggleable = "collapsed" | "isFavorite";
 
-type FavoriteRegularNote = {
+export type FavoriteRegularNote = {
 	id: UniqueIdentifier;
 	title: string;
 };
@@ -45,9 +45,7 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 
 					// set selected note to new note
 					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
-					// Promise.resolve().then(() => {
-						setSelectedNote({ type: "regularNote", id: idForNewNote, title: "" });
-					// });
+					setSelectedNote({ type: "regularNote", id: idForNewNote, title: "" });
 					return { regularNotes: newNotes };
 				}),
 			removeNote: (id) =>
@@ -110,14 +108,22 @@ export const useRegularNoteStore = create<RegularNoteStore>()(
 				}),
 			toggleProperty: ({ id, property }) =>
 				set((state) => {
-					const newNotes = togglePropertyFunction(state.regularNotes, id, property);
+					const { newNotes, becameFavAfterToggle, title } = togglePropertyFunction(
+						state.regularNotes,
+						id,
+						property
+					);
+
+					let newFavs: FavoriteRegularNotes = [];
+					if (property === "isFavorite") {
+						newFavs = becameFavAfterToggle
+							? [...state.favoriteNotes, { id: id, title: title }]
+							: state.favoriteNotes.filter((note) => note.id !== id);
+					}
 
 					return {
 						regularNotes: newNotes,
-						favoriteNotes:
-							property === "isFavorite"
-								? state.favoriteNotes.filter((note) => note.id !== id)
-								: state.favoriteNotes,
+						favoriteNotes: property === "isFavorite" ? newFavs : state.favoriteNotes,
 					};
 				}),
 			setRegularNotes: (notes) =>

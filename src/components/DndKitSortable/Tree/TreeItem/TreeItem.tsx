@@ -13,10 +13,9 @@ import {
 	PlusIcon,
 	TrashIcon,
 } from "@heroicons/react/20/solid";
-
-import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
-import { useRef, useState } from "react";
-import { ControlledMenu, useClick } from "@szhsin/react-menu";
+import { MenuItem } from "@szhsin/react-menu";
+import { useState } from "react";
+import { ControlledMenu } from "@szhsin/react-menu";
 import { CornerUpRight, Star, StarOff } from "lucide-react";
 import { NoteId, useSelectedNoteStore } from "@/state/selectedNote";
 
