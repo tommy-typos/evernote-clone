@@ -5,7 +5,7 @@ import { useSelectedNoteStore } from "./selectedNote";
 import { addNoteFunction, removeNoteFunction, togglePropertyFunction, updateNoteTitleFunction } from "./utilities";
 import { deleteNotesFromLocalStorage } from "@/utils/functions1";
 
-type RegularNote = {
+export type RegularNote = {
 	id: UniqueIdentifier;
 	title: string;
 	children: RegularNote[];
@@ -32,9 +32,10 @@ type RegularNoteStore = {
 	toggleProperty: (argList: { id: UniqueIdentifier; property: Toggleable }) => void;
 	setRegularNotes: (notes: RegularNotes) => void;
 	setFavoriteNotes: (notes: FavoriteRegularNotes) => void;
+	// findRegularNoteWithId: (id: UniqueIdentifier) => RegularNote;
 };
 
-const useRegularNoteStore = create<RegularNoteStore>()(
+export const useRegularNoteStore = create<RegularNoteStore>()(
 	persist(
 		(set) => ({
 			// TODO: ask why "as" was important to get rid of errors
@@ -45,9 +46,10 @@ const useRegularNoteStore = create<RegularNoteStore>()(
 					const { newNotes, idForNewNote } = addNoteFunction(state.regularNotes, parentId);
 
 					// set selected note to new note
-					const setSelectedNode = useSelectedNoteStore((state) => state.setSelectedNote);
+					// const setSelectedNode = useSelectedNoteStore((state) => state.setSelectedNote);
+					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
 					Promise.resolve().then(() => {
-						setSelectedNode({ type: "regularNote", id: idForNewNote, title: "" });
+						setSelectedNote({ type: "regularNote", id: idForNewNote, title: "" });
 					});
 					return { regularNotes: newNotes };
 				}),
@@ -65,10 +67,12 @@ const useRegularNoteStore = create<RegularNoteStore>()(
 					}
 
 					// update selected note
-					const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
-					const setSelectedNode = useSelectedNoteStore((state) => state.setSelectedNote);
+					// const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
+					// const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
+					const selectedNote = useSelectedNoteStore.getState().selectedNote;
+					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
 					if (selectedNote && allRemovedNoteIds.includes(selectedNote?.id)) {
-						setSelectedNode(null);
+						setSelectedNote(null);
 					}
 
 					// delete content of removed notes from database
@@ -98,10 +102,12 @@ const useRegularNoteStore = create<RegularNoteStore>()(
 					});
 
 					//update in selected note
-					const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
-					const setSelectedNode = useSelectedNoteStore((state) => state.setSelectedNote);
+					// const selectedNote = useSelectedNoteStore((state) => state.selectedNote);
+					// const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
+					const selectedNote = useSelectedNoteStore.getState().selectedNote;
+					const setSelectedNote = useSelectedNoteStore.getState().setSelectedNote;
 					if (selectedNote && selectedNote.id === id) {
-						setSelectedNode({ ...selectedNote, title: title });
+						setSelectedNote({ ...selectedNote, title: title });
 					}
 
 					return {
@@ -133,6 +139,10 @@ const useRegularNoteStore = create<RegularNoteStore>()(
 						favoriteNotes: notes,
 					};
 				}),
+			// findRegularNoteWithId: (id) => {
+			// 	const foundItem = useRegularNoteStore.getState().regularNotes.find(note => note.id === id) as RegularNote;
+			// 	return foundItem;
+			// },
 		}),
 		{
 			name: "regular-notes-tree",

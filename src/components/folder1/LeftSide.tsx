@@ -4,20 +4,25 @@ import { useState } from "react";
 import { Notebooks } from "../Notebooks";
 import { DailyNotes } from "./DailyNotes";
 import { Dispatch, SetStateAction } from "react";
-import { NoteIDandTitlewithNoteType } from "./App";
+// import { NoteIDandTitlewithNoteType } from "./App";
 import { twSpacing } from "@/utils/colors/twTheme";
 import { TreeItems } from "../DndKitSortable/Tree/types";
+import { useSelectedNoteStore } from "@/state/selectedNote";
 
 type TabType = "settings" | "notebooks" | "dailyNotes";
 
 type Props = {
-	selectedNote: NoteIDandTitlewithNoteType;
-	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
+	// selectedNote: NoteIDandTitlewithNoteType;
+	// setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
 	items: TreeItems;
 	setItems: React.Dispatch<React.SetStateAction<TreeItems>>;
 };
 
-export function LeftSide({ selectedNote, setSelectedNote, items, setItems }: Props) {
+export function LeftSide({ 
+	// selectedNote, setSelectedNote,
+	items, setItems }: Props) {
+		// const selectedNote = useSelectedNoteStore(state => state.selectedNote);
+		// const setSelectedNote = useSelectedNoteStore(state => state.setSelectedNote);
 	const [openTab, setOpenTab] = useState<TabType>("notebooks");
 
 	return (
@@ -47,13 +52,15 @@ export function LeftSide({ selectedNote, setSelectedNote, items, setItems }: Pro
 			{openTab === "settings" && <ProfileAndSettings />}
 			{openTab === "notebooks" && (
 				<Notebooks
-					selectedNote={selectedNote}
-					setSelectedNote={setSelectedNote}
+					// selectedNote={selectedNote}
+					// setSelectedNote={setSelectedNote}
 					items={items}
 					setItems={setItems}
 				/>
 			)}
-			{openTab === "dailyNotes" && <DailyNotes setSelectedNote={setSelectedNote} />}
+			{openTab === "dailyNotes" && <DailyNotes 
+			// setSelectedNote={setSelectedNote}
+			 />}
 		</div>
 	);
 }

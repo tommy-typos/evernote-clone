@@ -3,8 +3,9 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 import type { FlattenedItem, TreeItem, TreeItems } from "./types";
 import { nanoid } from "nanoid";
-import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
+// import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
 import { Dispatch, SetStateAction } from "react";
+import { SelectedNote, useSelectedNoteStore } from "@/state/selectedNote";
 
 function getDragDepth(offset: number, indentationWidth: number) {
 	return Math.round(offset / indentationWidth);
@@ -131,8 +132,8 @@ export function findItemDeep(items: TreeItems, itemId: UniqueIdentifier): TreeIt
 export function removeItem(
 	items: TreeItems,
 	id: UniqueIdentifier,
-	selectedNote: NoteIDandTitlewithNoteType,
-	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>
+	selectedNote: SelectedNote | null,
+	setSelectedNote: (note: SelectedNote | null) => void
 ) {
 	const newItems = [];
 
@@ -148,8 +149,8 @@ export function removeItem(
 		newItems.push(item);
 	}
 
-	if (selectedNote && selectedNote.split(",")[1] === id) {
-		setSelectedNote(undefined);
+	if (selectedNote && selectedNote.id === id) {
+		setSelectedNote(null);
 	}
 
 	return newItems;
@@ -179,7 +180,7 @@ export function changeItemName(items: TreeItems, id: UniqueIdentifier, name: str
 export function addNewNote(
 	items: TreeItems,
 	parentId: UniqueIdentifier | null,
-	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>
+	setSelectedNote: (note: SelectedNote | null) => void
 ) {
 	let newItems = [];
 	let idForNewNote = nanoid();
@@ -212,7 +213,8 @@ export function addNewNote(
 		newItems = [...items];
 	}
 
-	setSelectedNote(`regularNote,${idForNewNote},`);
+	// setSelectedNote(`regularNote,${idForNewNote},`);
+	setSelectedNote({type: "regularNote", id: idForNewNote, title: ""});
 
 	return newItems;
 }

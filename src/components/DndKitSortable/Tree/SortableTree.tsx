@@ -33,10 +33,11 @@ import { SortableTreeItem } from "./TreeItem";
 import { CSS } from "@dnd-kit/utilities";
 import { initialItems } from "@/utils/sampleNoteTree";
 
-import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
+// import { NoteIDandTitlewithNoteType } from "@/components/folder1/App";
 import { Dispatch, SetStateAction } from "react";
 import { getNoteTree, saveNoteTreeToLocalStorage } from "@/utils/functions1";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import { useSelectedNoteStore } from "@/state/selectedNote";
 
 const measuring = {
 	droppable: {
@@ -72,8 +73,8 @@ interface Props {
 	// defaultItems?: TreeItems;
 	indentationWidth?: number;
 	removable?: boolean;
-	selectedNote: NoteIDandTitlewithNoteType;
-	setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
+	// selectedNote: NoteIDandTitlewithNoteType;
+	// setSelectedNote: Dispatch<SetStateAction<NoteIDandTitlewithNoteType>>;
 	items: TreeItems;
 	setItems: React.Dispatch<React.SetStateAction<TreeItems>>;
 }
@@ -90,12 +91,14 @@ export function SortableTree({
 	// defaultItems = initialItems,
 	indentationWidth = 50,
 	removable,
-	selectedNote,
-	setSelectedNote,
+	// selectedNote,
+	// setSelectedNote,
 	items,
 	setItems,
 }: Props) {
 	// const [items, setItems] = useState<TreeItems>(() => getNoteTree());
+	const selectedNote = useSelectedNoteStore(state => state.selectedNote);
+	const setSelectedNote = useSelectedNoteStore(state => state.setSelectedNote)
 	const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 	const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
 	const [offsetLeft, setOffsetLeft] = useState(0);
@@ -150,8 +153,8 @@ export function SortableTree({
 							onCollapse={collapsible && children.length ? () => handleCollapse(id) : undefined}
 							onRemove={removable ? () => handleRemove(id) : undefined}
 							onAddChild={() => handleAddChild(id)}
-							selectedNote={selectedNote}
-							setSelectedNote={setSelectedNote}
+							// selectedNote={selectedNote}
+							// setSelectedNote={setSelectedNote}
 							onMakeFavorite={() => handleMakeFavorite(id)}
 						/>
 					))}

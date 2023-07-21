@@ -1,5 +1,6 @@
 import { TreeItems } from "@/components/DndKitSortable/Tree/types";
-import { noteType } from "@/components/folder1/App";
+// import { noteType } from "@/components/folder1/App";
+import { NoteId, NoteType } from "@/state/selectedNote";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { MutableRefObject } from "react";
 
@@ -21,7 +22,7 @@ export const debounce = (cb: Function, delay = 150, timeoutRef: MutableRefObject
 	};
 };
 
-export const saveNoteToLocalStorage = (noteContent: string, noteID: string, noteType: noteType) => {
+export const saveNoteToLocalStorage = (noteContent: string, noteID: NoteId, noteType: NoteType) => {
 	if (noteType === "dailyNote") {
 		const userData = JSON.parse(window.localStorage.getItem("userDailyNotes")!) || {};
 		userData[noteID] = noteContent;

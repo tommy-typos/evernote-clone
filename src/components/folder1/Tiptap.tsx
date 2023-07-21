@@ -14,9 +14,10 @@ import { getFontColorsDarkMode, getHighlightColorsDarkMode, ColorHex } from "@/u
 import { useEditor, EditorContent, Extension } from "@tiptap/react";
 import { Editor } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
-import { NoteIDandTitlewithNoteType, noteType } from "./App";
+// import { NoteIDandTitlewithNoteType, noteType } from "./App";
 import { debounce, isToday, saveNoteToLocalStorage } from "@/utils/functions1";
 import type { UniqueIdentifier } from "@dnd-kit/core";
+import { NoteId, NoteType, useSelectedNoteStore } from "@/state/selectedNote";
 
 const TabKeepsFocusExtension = Extension.create({
 	name: "tabKeepsFocus",
@@ -38,11 +39,15 @@ export function generateAuto() {
 const formatOptions: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
 
 type Props = {
-	selectedNote: NoteIDandTitlewithNoteType;
+	// selectedNote: NoteIDandTitlewithNoteType;
 	changeNoteTitle(noteId: UniqueIdentifier, title: string): void;
 };
 
-const Tiptap = ({ selectedNote, changeNoteTitle }: Props) => {
+const Tiptap = ({
+	//  selectedNote,
+	 changeNoteTitle }: Props) => {
+		const selectedNote = useSelectedNoteStore(state => state.selectedNote);
+
 	const [headingLevel, setHeadingLevel] = useState<string>("");
 	const [fontColor, setFontColor] = useState<ColorHexOrAuto>(generateAuto() as ColorHexOrAuto);
 	const [highlightColor, setHighlightColor] = useState<ColorHex>(getHighlightColorsDarkMode()[0].twHex);
@@ -54,22 +59,22 @@ const Tiptap = ({ selectedNote, changeNoteTitle }: Props) => {
 	const timeoutRefforTitle = useRef<MutableRefObject<NodeJS.Timeout>>(null);
 
 	let noteContent = useRef<string>();
-	let noteID = useRef<string>();
-	let noteType = useRef<noteType>();
+	let noteID = useRef<NoteId>();
+	let noteType = useRef<NoteType>();
 	let noteTitle = useRef<string>();
 	let ifDailyThenIsToday = useRef<boolean>();
 
 	useEffect(() => {
 		ifDailyThenIsToday.current = false;
 		if (selectedNote) {
-			noteType.current = selectedNote.split(",")[0] as noteType;
-			noteID.current = selectedNote.split(",")[1];
+			noteType.current = selectedNote.type
+			noteID.current = selectedNote.id;
 
 			if (noteType.current === "dailyNote") {
 				const userDailyNoteData = JSON.parse(window.localStorage.getItem("userDailyNotes")!) || {};
 				noteContent.current = userDailyNoteData[noteID.current] ?? "";
 
-				let temp = noteID.current.split("-");
+				let temp = noteID.current.toString().split("-");
 				noteTitle.current = "📅 " + new Date(
 					parseInt(temp[0]),
 					parseInt(temp[1]) - 1,
@@ -84,7 +89,7 @@ const Tiptap = ({ selectedNote, changeNoteTitle }: Props) => {
 				noteContent.current = userRegularNoteData[noteID.current] ?? "";
 
 				// noteTitle.current = "note title";
-				noteTitle.current = selectedNote.split(",")[2];
+				noteTitle.current = selectedNote.title
 				//  ? selectedNote.split(",")[2] : "Untitled";
 			}
 

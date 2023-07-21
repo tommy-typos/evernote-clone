@@ -1,10 +1,12 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { create } from "zustand";
+import { RegularNote, RegularNotes, useRegularNoteStore } from "./regularNotes";
+import { Item } from "@radix-ui/react-select";
 
-type NoteType = "dailyNote" | "regularNote";
-type NoteId = UniqueIdentifier | `${string}-${string}-${string}`;
+export type NoteType = "dailyNote" | "regularNote";
+export type NoteId = UniqueIdentifier | `${string}-${string}-${string}`;
 
-type SelectedNote = {
+export type SelectedNote = {
 	type: NoteType;
 	id: NoteId;
 	title: string;
@@ -14,6 +16,7 @@ type SelectedNoteStore = {
 	selectedNote: SelectedNote | null;
 	latestSelectedRegularNoteId: UniqueIdentifier | null;
 	setSelectedNote: (note: SelectedNote | null) => void;
+	setSelectedNoteFromLatestRegularNoteId: () => void;
 };
 
 export const useSelectedNoteStore = create<SelectedNoteStore>()((set) => ({
@@ -35,4 +38,41 @@ export const useSelectedNoteStore = create<SelectedNoteStore>()((set) => ({
 				latestSelectedRegularNoteId: latestShouldChange ? newLatestValue : state.latestSelectedRegularNoteId,
 			};
 		}),
+	setSelectedNoteFromLatestRegularNoteId: () =>
+		set((state) => {
+			let found = false;
+			let selectedNote: SelectedNote | null = null;
+			if (state.latestSelectedRegularNoteId) {
+				const regularNotes = useRegularNoteStore.getState().regularNotes;
+				// const setRegularNotes = useRegularNoteStore.getState().setRegularNotes;
+				// setRegularNotes([]);
+				const note = findRegularNoteWithId(regularNotes, state.latestSelectedRegularNoteId);
+				if (note) {
+					selectedNote = {
+						id: note.id,
+						type: "regularNote",
+						title: note.title,
+					};
+
+					found = true;
+				}
+			}
+			return {
+				selectedNote: found ? selectedNote : state.selectedNote,
+			};
+		}),
 }));
+
+function findRegularNoteWithId(regularNotes: RegularNotes, id: UniqueIdentifier): RegularNote | null {
+	for (const item of regularNotes) {
+		if (item.id === id) {
+			return item;
+		}
+
+		if (item.children.length) {
+			return findRegularNoteWithId(item.children, id);
+		}
+	}
+
+	return null;
+}
