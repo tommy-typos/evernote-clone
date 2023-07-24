@@ -56,7 +56,7 @@ export const Page = forwardRef<HTMLLIElement, Props>(function Page(
 				data-id={id.toString()}
 				{...props}
 			>
-				{title ? title : "Undefined"}
+				{title ? title : "Untitled"}
 			</button>
 		</li>
 	);

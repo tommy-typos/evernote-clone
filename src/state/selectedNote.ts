@@ -61,15 +61,18 @@ export const useSelectedNoteStore = create<SelectedNoteStore>()((set) => ({
 }));
 
 function findRegularNoteWithId(regularNotes: RegularNotes, id: UniqueIdentifier): RegularNote | null {
+	let foundNote: RegularNote | null = null;
+
 	for (const item of regularNotes) {
 		if (item.id === id) {
-			return item;
+			foundNote = item;
+			break;
 		}
 
 		if (item.children.length) {
-			return findRegularNoteWithId(item.children, id);
+			foundNote = findRegularNoteWithId(item.children, id);
 		}
 	}
 
-	return null;
+	return foundNote;
 }
