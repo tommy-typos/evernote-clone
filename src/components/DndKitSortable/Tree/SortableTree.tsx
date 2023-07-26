@@ -152,7 +152,7 @@ export function SortableTree({ collapsible, indentationWidth = 50, removable }: 
 				<PlusIcon className="mr-1 h-5 w-5" />
 				Add a note
 			</button>
-			<DenemeResetTree />
+			{/* <DenemeResetTree /> */}
 		</>
 	);
 

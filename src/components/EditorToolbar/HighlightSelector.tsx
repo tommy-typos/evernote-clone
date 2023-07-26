@@ -39,7 +39,7 @@ export const HighlightSelector = forwardRef(
 					</Select.Trigger>
 				</TooltipProvider>
 
-				<SelectViewPort className="w-60 py-4">
+				<SelectViewPort className="w-60 border-2 border-slate-700 py-4 ">
 					<Select.Group className="mx-7 grid grid-cols-6 justify-items-center gap-2">
 						{getHighlightColorsDarkMode().map((highlightColorDarkMode) => (
 							<ColorSelectItem

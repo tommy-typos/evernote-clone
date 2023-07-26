@@ -31,7 +31,7 @@ export const HeadingLevelSelector = ({ editor, headingLevel }: { editor: Editor;
 				</Select.Trigger>
 			</TooltipProvider>
 
-			<SelectViewPort className="w-72 py-2">
+			<SelectViewPort className="w-72 border-2 border-slate-700 py-2">
 				<Select.Group>
 					<HeadingSelectItem value="heading-1" className="text-4xl font-bold">
 						Large header
