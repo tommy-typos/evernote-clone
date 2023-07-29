@@ -8,7 +8,7 @@ import { twSpacing } from "@/utils/colors/twTheme";
 type TabType = "settings" | "notebooks" | "dailyNotes";
 
 export function LeftSide() {
-	const [openTab, setOpenTab] = useState<TabType>("notebooks");
+	const [openTab, setOpenTab] = useState<TabType>("dailyNotes");
 
 	return (
 		<div style={{ minWidth: twSpacing[96], maxWidth: twSpacing[96] }} className="flex h-full flex-col bg-slate-950">
