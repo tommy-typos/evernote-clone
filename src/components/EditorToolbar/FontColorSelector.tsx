@@ -52,7 +52,7 @@ export const ColorSelector = React.forwardRef<any, any>(
 					</Select.Trigger>
 				</TooltipProvider>
 
-				<SelectViewPort className="w-60 py-4">
+				<SelectViewPort className="w-60 py-4 border-2 border-slate-700 ">
 					<Select.Group className="mx-4 mb-3">
 						<Select.Item
 							value={generateAuto()}

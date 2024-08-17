@@ -10,6 +10,7 @@ export function DenemeResetTree() {
 			onClick={() => {
 				setFavs([]);
 				setRegulars([
+					// { id: "noteid 0", title: "note 0", children: [] },
 					{
 						id: "noteid 1",
 						title: "note 1",

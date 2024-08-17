@@ -260,9 +260,9 @@ export const TooltipProvider = forwardRef<any, any>(({ tooltipContent, children,
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
 				<Tooltip.Portal>
-					<Tooltip.Content className="rounded bg-slate-900 p-1 text-slate-50" sideOffset={10} side="bottom">
+					<Tooltip.Content className="rounded bg-slate-700 p-1 text-slate-50" sideOffset={10} side="bottom">
 						{tooltipContent}
-						<Tooltip.Arrow className="fill-slate-900" />
+						<Tooltip.Arrow className="fill-slate-700" />
 					</Tooltip.Content>
 				</Tooltip.Portal>
 			</Tooltip.Root>

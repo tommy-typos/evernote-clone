@@ -45,10 +45,11 @@ export function removeNoteFunction(notes: RegularNotes, id: UniqueIdentifier) {
 		if (item.id === id) {
 			allRemovedNoteIds.push(id);
 			if (item.children.length) {
+				console.log('yes')
 				const childrenIds = getIdsOfChildren(item.children);
 				allRemovedNoteIds.push(...childrenIds);
 			}
-			break;
+			continue;
 		}
 
 		if (item.children.length) {
@@ -112,7 +113,7 @@ export function togglePropertyFunction(
 			becameFavAfterToggle = !item[property];
 			item[property] = becameFavAfterToggle;
 			title = item.title;
-			continue;
+			break;
 		}
 
 		if (item.children.length) {

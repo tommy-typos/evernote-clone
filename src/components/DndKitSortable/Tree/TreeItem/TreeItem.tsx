@@ -123,7 +123,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
 									(selectedNote && selectedNote.id === noteId) || isContextOpen
 										? twColors.slate[700]
 										: undefined,
-								color: isFavorite ? twColors.yellow[400] : undefined,
+								// color: isFavorite ? twColors.yellow[400] : undefined,
 							}}
 						>
 							{noteName ? noteName : "Untitled"}

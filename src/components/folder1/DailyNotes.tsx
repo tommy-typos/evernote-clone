@@ -6,15 +6,20 @@ import { useSelectedNoteStore } from "@/state/selectedNote";
 
 export function DailyNotes() {
 	const setSelectedNote = useSelectedNoteStore((state) => state.setSelectedNote);
-	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [active_start_date, setActiveStartDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState<Date>();
+	const [active_start_date, setActiveStartDate] = useState<Date>();
 
 	const changeActiveStartDate = ({ action, activeStartDate, value, view }: OnArgs) => {
 		setActiveStartDate(activeStartDate!);
 	};
 
 	useEffect(() => {
-		setSelectedNote({ type: "dailyNote", id: returnDateID(selectedDate), title: "" });
+		setSelectedDate(new Date());
+		setActiveStartDate(new Date());
+	}, []);
+
+	useEffect(() => {
+		selectedDate && setSelectedNote({ type: "dailyNote", id: returnDateID(selectedDate), title: "" });
 	}, [selectedDate]);
 
 	const goToToday = () => {
